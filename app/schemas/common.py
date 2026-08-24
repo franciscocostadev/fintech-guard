@@ -1,0 +1,13 @@
+from pydantic import BaseModel
+
+
+class HealthResponse(BaseModel):
+    status: str
+    app: str
+    version: str
+    environment: str
+    database: str
+
+
+class ErrorResponse(BaseModel):
+    detail: str
