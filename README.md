@@ -27,7 +27,7 @@ Rotas principais:
 
 ## Rodando localmente
 
-Use Python 3.11 ou mais novo.
+Use Python 3.12 ou mais novo.
 
 ```bash
 git clone https://github.com/franciscocostadev/fintech-guard.git
