@@ -97,12 +97,36 @@ def plot_text_length_distribution(train: pd.DataFrame, test: pd.DataFrame) -> No
     plt.close()
 
 
+def plot_text_length_by_category(train: pd.DataFrame) -> None:
+    # Seleção feita apenas no treino: 10 categorias com maior mediana de comprimento.
+    lengths = train.assign(chars=train['text'].str.len())
+    selected = (lengths.groupby('category')['chars'].median()
+                .sort_values(ascending=False).head(10).sort_values().index)
+    fig, ax = plt.subplots(figsize=(12, 7))
+    ax.boxplot([lengths.loc[lengths['category'].eq(c), 'chars'] for c in selected],
+               tick_labels=selected, vert=False, patch_artist=True,
+               boxprops={'facecolor': '#9ecae1'},
+               medianprops={'color': '#b22222'}, showfliers=True)
+    ax.set_title('Comprimento por categoria — 10 maiores medianas no treino')
+    ax.set_xlabel('Caracteres por mensagem')
+    ax.set_ylabel('Categoria')
+    ax.grid(axis='x', alpha=0.25)
+    fig.tight_layout()
+    fig.savefig(FIGURES_DIR / 'banking77_text_length_by_category.png', dpi=160)
+    plt.close(fig)
+
+
 def main() -> None:
     PROCESSED_DIR.mkdir(parents=True, exist_ok=True)
     FIGURES_DIR.mkdir(parents=True, exist_ok=True)
 
     train = load_split("train")
     test = load_split("test")
+
+    print("DataFrame.describe(include=all) — treino original")
+    print(train.describe(include="all").to_string())
+    print("DataFrame.describe(include=all) — teste original")
+    print(test.describe(include="all").to_string())
 
     raw_summary = [describe_split("train_raw", train), describe_split("test_raw", test)]
     train_clean, test_clean, cleaning_stats = clean_data(train, test)
@@ -116,6 +140,7 @@ def main() -> None:
 
     plot_category_distribution(train_clean)
     plot_text_length_distribution(train_clean, test_clean)
+    plot_text_length_by_category(train_clean)
 
     print("BANKING77 EDA")
     print(f"Raw train shape: {train.shape}")
