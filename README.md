@@ -1,6 +1,6 @@
 # Fintech Guard
 
-Documento de alinhamento do integrante B: [alinhamento-integrante-B.md](alinhamento-integrante-B.md).
+Revisão do material preparado pelo integrante B: [alinhamento-integrante-B.md](alinhamento-integrante-B.md).
 
 API FastAPI para classificar mensagens de atendimento bancário e sinalizar
 possíveis situações de fraude ou engenharia social. A API usa JWT, persiste
@@ -61,12 +61,15 @@ desenvolvimento; altere-os antes de criar o usuário.
 | `POST /predict` | JWT obrigatório | Classifica e registra uma mensagem. Retorna o ID e o header `Location`. |
 | `GET /predictions/{id}` | JWT obrigatório | Retorna uma predição somente ao seu proprietário. |
 
-Exemplo de login local:
+Login local (valores padrão do `.env.example`, em um banco recém-criado):
 
 ```bash
 curl -X POST http://127.0.0.1:8000/auth/token \
-  -d 'username=analista&password=troque-esta-senha'
+  --data-urlencode 'username=analista' \
+  --data-urlencode 'password=Troque@Esta#Senha123'
 ```
+
+Se alterou `SEED_USERNAME` ou `SEED_PASSWORD` no `.env`, use esses valores.
 
 Use o `access_token` da resposta para classificar uma mensagem:
 
