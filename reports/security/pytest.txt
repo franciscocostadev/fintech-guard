@@ -1,0 +1,48 @@
+============================= test session starts ==============================
+platform linux -- Python 3.12.3, pytest-8.3.4, pluggy-1.6.0 -- /home/francisco-dev/Documentos/Faculdade/fintech-guard/.venv/bin/python3
+cachedir: .pytest_cache
+rootdir: /home/francisco-dev/Documentos/Faculdade/fintech-guard
+configfile: pytest.ini
+plugins: anyio-3.7.1
+collecting ... collected 37 items
+
+tests/test_api.py::test_health_e_publico PASSED                          [  2%]
+tests/test_api.py::test_home_exibe_interface_simples PASSED              [  5%]
+tests/test_api.py::test_health_traz_cabecalhos_de_seguranca PASSED       [  8%]
+tests/test_api.py::test_token_com_credenciais_validas PASSED             [ 10%]
+tests/test_api.py::test_token_com_senha_errada PASSED                    [ 13%]
+tests/test_api.py::test_predict_sem_token PASSED                         [ 16%]
+tests/test_api.py::test_predict_com_token_invalido PASSED                [ 18%]
+tests/test_api.py::test_predict_autenticado_retorna_intencao_por_regras PASSED [ 21%]
+tests/test_api.py::test_predict_rejeita_mensagem_vazia PASSED            [ 24%]
+tests/test_api.py::test_erro_de_validacao_nao_devolve_o_input PASSED     [ 27%]
+tests/test_api.py::test_auth_me PASSED                                   [ 29%]
+tests/test_api.py::test_predict_sem_token_responde_em_portugues PASSED   [ 32%]
+tests/test_security.py::test_recurso_por_id_exige_token PASSED           [ 35%]
+tests/test_security.py::test_ownership_bloqueia_outro_usuario_inclusive_admin PASSED [ 37%]
+tests/test_security.py::test_predict_rejeita_extra_sem_persistir PASSED  [ 40%]
+tests/test_security.py::test_login_rejeita_campo_extra_no_form PASSED    [ 43%]
+tests/test_security.py::test_login_suporta_form_oauth2_sem_escalar_permissoes PASSED [ 45%]
+tests/test_security.py::test_sql_injection_no_username_nao_autentica PASSED [ 48%]
+tests/test_security.py::test_login_rejeita_senha_bcrypt_truncada_em_bytes PASSED [ 51%]
+tests/test_security.py::test_rate_limit_sexta_tentativa_e_ip_forjado PASSED [ 54%]
+tests/test_security.py::test_rate_limit_conta_sucessos_e_bodies_invalidos PASSED [ 56%]
+tests/test_security.py::test_rate_limit_janela_ip_e_concorrencia PASSED  [ 59%]
+tests/test_security.py::test_rate_limit_memoria_limitada_nao_descarta_buckets_ativos PASSED [ 62%]
+tests/test_security.py::test_headers_em_sucesso_e_erros[/health-200] PASSED [ 64%]
+tests/test_security.py::test_headers_em_sucesso_e_erros[/missing-404] PASSED [ 67%]
+tests/test_security.py::test_headers_em_sucesso_e_erros[/auth/me-401] PASSED [ 70%]
+tests/test_security.py::test_headers_em_erro_interno PASSED              [ 72%]
+tests/test_security.py::test_html_tem_nonce_compativel_com_csp[/] PASSED [ 75%]
+tests/test_security.py::test_html_tem_nonce_compativel_com_csp[/docs] PASSED [ 78%]
+tests/test_security.py::test_cors_allowlist_e_preflight PASSED           [ 81%]
+tests/test_security.py::test_config_recusa_cors_sem_origem_explicita[*] PASSED [ 83%]
+tests/test_security.py::test_config_recusa_cors_sem_origem_explicita[https://*.example.com] PASSED [ 86%]
+tests/test_security.py::test_config_recusa_cors_sem_origem_explicita[null] PASSED [ 89%]
+tests/test_security.py::test_config_recusa_cors_sem_origem_explicita[https://example.com/path] PASSED [ 91%]
+tests/test_security.py::test_config_recusa_cors_sem_origem_explicita[https://user:pass@example.com] PASSED [ 94%]
+tests/test_security.py::test_openapi_todos_os_bodies_rejeitam_extras PASSED [ 97%]
+tests/test_security.py::test_swagger_assets_fixados_com_integridade PASSED [100%]
+
+- generated xml file: /home/francisco-dev/Documentos/Faculdade/fintech-guard/reports/security/pytest.xml -
+============================== 37 passed in 4.33s ==============================

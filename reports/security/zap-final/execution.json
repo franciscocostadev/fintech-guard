@@ -1,0 +1,673 @@
+{
+  "started_at": "2026-09-26T13:04:29.441374+00:00",
+  "finished_at": "2026-09-26T13:04:39.568576+00:00",
+  "target": "http://127.0.0.1:18000",
+  "environment": "development",
+  "zap_version": "2.17.0",
+  "mode": "safe",
+  "scan_type": "passive",
+  "active_scans": 0,
+  "spider_scans": 0,
+  "records_to_scan": 0,
+  "passive_tasks_running": 0,
+  "baseline": false,
+  "credential_values_redacted": true,
+  "source_sha256": {
+    "app/__init__.py": "91447944015cec709e8aa7655f7e9d64e1e4508e7023a57fe3746911c0fc6fed",
+    "app/api/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "app/api/deps.py": "c4c68dec2958f2ac0bf701bbe17a098ed79e9b44afae7795ea6094b742f50d04",
+    "app/api/routes/__init__.py": "830dd5e78280b3e0eb3c79011f80c9b38003ff73ff21f349ee8c208c34a917ba",
+    "app/api/routes/auth.py": "2ec2158823d58daead6568f81a3d2e3d615eb32a977ac97c5d16a91fc4e70e0b",
+    "app/api/routes/health.py": "899f23ae9a13dfe849e05c1752b515f06ead547416104cf2890269b1445a3f8a",
+    "app/api/routes/home.py": "b907f886e8cbfa0ed4756d25ebbfaf194ed07957b3e754024cda2c46a8e69f83",
+    "app/api/routes/predict.py": "12db7ec353d17f60fde965ba2041df19b414eb89ef1742b0b31796c2782b3978",
+    "app/core/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "app/core/config.py": "9bde586322d9bda6cd31e8999ee2563a18b67a9c494b01adf2146605c0d272e3",
+    "app/core/middleware.py": "9a63f503e818350d8c98512238bd47692907cb8d44b8a99ac2698039bfaa31e8",
+    "app/core/security.py": "499ea580f540d51971c4436a43da9f650acc21250ef33893e1ef14678c96404e",
+    "app/db/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "app/db/session.py": "58ffd8d6fb4526f8a7c83548cd84e7725c18d7362a7004d01f57c1138c1d4202",
+    "app/main.py": "5cfde8d807c719706b5e838f44157a5c09875979aeb2a22192458158ae25d52e",
+    "app/models/__init__.py": "efb6c0c4096a5a353337f442edefb90a0aca5acf79c89908daf82cb4c9afeaad",
+    "app/models/audit.py": "b80bf24fbef3591ebfbe47a7115e62f250645a932128a32d48b5c5e1eb8e16b9",
+    "app/models/user.py": "8a82ace1e2e51687c186cd72226cb0fad1f2fc183223daa692f575a315f8f73e",
+    "app/schemas/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "app/schemas/auth.py": "f339f950012ff33b2616eee1470ab02870887f0b4f1e8e6019842d17d00a3df0",
+    "app/schemas/base.py": "af5eccf8915e211539089962c7e542f58c894d74cf878ab47f7f70753cae31b9",
+    "app/schemas/common.py": "6f3e8d72d9cbb4953fab0008d7bec2e4ded768b63a068220716fd6c6df0a9210",
+    "app/schemas/predict.py": "408a1f98c9ab28ade6e064b92df8cdbca1efde68c7d5c17a365c92b98225c853",
+    "app/services/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "app/services/predictor.py": "2d20b16530b42cf7d4ee641bd5210fb8a5552dd417b27e64212264705a7cf3e4",
+    "app/services/rate_limit.py": "875509940ca126ad6425c49f2b7f86d1e383a11896c6d3a88f580c25a62c2b5a"
+  },
+  "requests": [
+    {
+      "method": "GET",
+      "path": "/",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/health",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/docs",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/redoc",
+      "status": 307
+    },
+    {
+      "method": "GET",
+      "path": "/openapi.json",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/favicon.ico",
+      "status": 204
+    },
+    {
+      "method": "GET",
+      "path": "/missing",
+      "status": 404
+    },
+    {
+      "method": "GET",
+      "path": "/auth/me",
+      "status": 401
+    },
+    {
+      "method": "POST",
+      "path": "/predict",
+      "status": 401
+    },
+    {
+      "method": "GET",
+      "path": "/predictions/1",
+      "status": 401
+    },
+    {
+      "method": "POST",
+      "path": "/auth/token",
+      "status": 200
+    },
+    {
+      "method": "POST",
+      "path": "/auth/token",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/auth/me",
+      "status": 200
+    },
+    {
+      "method": "POST",
+      "path": "/predict",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/predictions/1",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/predictions/1",
+      "status": 404
+    },
+    {
+      "method": "GET",
+      "path": "/predictions/99999999",
+      "status": 404
+    },
+    {
+      "method": "POST",
+      "path": "/predict",
+      "status": 422
+    },
+    {
+      "method": "POST",
+      "path": "/predict",
+      "status": 422
+    },
+    {
+      "method": "POST",
+      "path": "/auth/token",
+      "status": 422
+    },
+    {
+      "method": "POST",
+      "path": "/auth/token",
+      "status": 401
+    },
+    {
+      "method": "POST",
+      "path": "/auth/token",
+      "status": 401
+    },
+    {
+      "method": "POST",
+      "path": "/auth/token",
+      "status": 429
+    },
+    {
+      "method": "OPTIONS",
+      "path": "/predict",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/health",
+      "status": 200
+    },
+    {
+      "method": "OPTIONS",
+      "path": "/predict",
+      "status": 400
+    },
+    {
+      "method": "GET",
+      "path": "/health",
+      "status": 200
+    }
+  ],
+  "alert_instances_by_risk": {
+    "Informational": 5
+  },
+  "passive_scanners": [
+    {
+      "alertThreshold": "DEFAULT",
+      "name": "Anti-clickjacking Header",
+      "id": "10020",
+      "enabled": "true",
+      "quality": "release",
+      "status": "release"
+    },
+    {
+      "alertThreshold": "DEFAULT",
+      "name": "Application Error Disclosure",
+      "id": "90022",
+      "enabled": "true",
+      "quality": "release",
+      "status": "release"
+    },
+    {
+      "alertThreshold": "DEFAULT",
+      "name": "Big Redirect Detected (Potential Sensitive Information Leak)",
+      "id": "10044",
+      "enabled": "true",
+      "quality": "release",
+      "status": "release"
+    },
+    {
+      "alertThreshold": "DEFAULT",
+      "name": "Re-examine Cache-control Directives",
+      "id": "10015",
+      "enabled": "true",
+      "quality": "release",
+      "status": "release"
+    },
+    {
+      "alertThreshold": "DEFAULT",
+      "name": "Charset Mismatch",
+      "id": "90011",
+      "enabled": "true",
+      "quality": "release",
+      "status": "release"
+    },
+    {
+      "alertThreshold": "DEFAULT",
+      "name": "Content Security Policy (CSP) Header Not Set",
+      "id": "10038",
+      "enabled": "true",
+      "quality": "release",
+      "status": "release"
+    },
+    {
+      "alertThreshold": "DEFAULT",
+      "name": "CSP",
+      "id": "10055",
+      "enabled": "true",
+      "quality": "release",
+      "status": "release"
+    },
+    {
+      "alertThreshold": "DEFAULT",
+      "name": "Content-Type Header Missing",
+      "id": "10019",
+      "enabled": "true",
+      "quality": "release",
+      "status": "release"
+    },
+    {
+      "alertThreshold": "DEFAULT",
+      "name": "Cookie No HttpOnly Flag",
+      "id": "10010",
+      "enabled": "true",
+      "quality": "release",
+      "status": "release"
+    },
+    {
+      "alertThreshold": "DEFAULT",
+      "name": "Loosely Scoped Cookie",
+      "id": "90033",
+      "enabled": "true",
+      "quality": "release",
+      "status": "release"
+    },
+    {
+      "alertThreshold": "DEFAULT",
+      "name": "Cookie without SameSite Attribute",
+      "id": "10054",
+      "enabled": "true",
+      "quality": "release",
+      "status": "release"
+    },
+    {
+      "alertThreshold": "DEFAULT",
+      "name": "Cookie Without Secure Flag",
+      "id": "10011",
+      "enabled": "true",
+      "quality": "release",
+      "status": "release"
+    },
+    {
+      "alertThreshold": "DEFAULT",
+      "name": "Cross-Domain Misconfiguration",
+      "id": "10098",
+      "enabled": "true",
+      "quality": "release",
+      "status": "release"
+    },
+    {
+      "alertThreshold": "DEFAULT",
+      "name": "Cross-Domain JavaScript Source File Inclusion",
+      "id": "10017",
+      "enabled": "true",
+      "quality": "release",
+      "status": "release"
+    },
+    {
+      "alertThreshold": "DEFAULT",
+      "name": "Absence of Anti-CSRF Tokens",
+      "id": "10202",
+      "enabled": "true",
+      "quality": "release",
+      "status": "release"
+    },
+    {
+      "alertThreshold": "DEFAULT",
+      "name": "Directory Browsing",
+      "id": "10033",
+      "enabled": "true",
+      "quality": "release",
+      "status": "release"
+    },
+    {
+      "alertThreshold": "DEFAULT",
+      "name": "Hash Disclosure",
+      "id": "10097",
+      "enabled": "true",
+      "quality": "release",
+      "status": "release"
+    },
+    {
+      "alertThreshold": "DEFAULT",
+      "name": "Heartbleed OpenSSL Vulnerability (Indicative)",
+      "id": "10034",
+      "enabled": "true",
+      "quality": "release",
+      "status": "release"
+    },
+    {
+      "alertThreshold": "DEFAULT",
+      "name": "In Page Banner Information Leak",
+      "id": "10009",
+      "enabled": "true",
+      "quality": "release",
+      "status": "release"
+    },
+    {
+      "alertThreshold": "DEFAULT",
+      "name": "Private IP Disclosure",
+      "id": "2",
+      "enabled": "true",
+      "quality": "release",
+      "status": "release"
+    },
+    {
+      "alertThreshold": "DEFAULT",
+      "name": "Session ID in URL Rewrite",
+      "id": "3",
+      "enabled": "true",
+      "quality": "release",
+      "status": "release"
+    },
+    {
+      "alertThreshold": "DEFAULT",
+      "name": "Information Disclosure - Debug Error Messages",
+      "id": "10023",
+      "enabled": "true",
+      "quality": "release",
+      "status": "release"
+    },
+    {
+      "alertThreshold": "DEFAULT",
+      "name": "Information Disclosure - Sensitive Information in URL",
+      "id": "10024",
+      "enabled": "true",
+      "quality": "release",
+      "status": "release"
+    },
+    {
+      "alertThreshold": "DEFAULT",
+      "name": "Information Disclosure - Sensitive Information in HTTP Referrer Header",
+      "id": "10025",
+      "enabled": "true",
+      "quality": "release",
+      "status": "release"
+    },
+    {
+      "alertThreshold": "DEFAULT",
+      "name": "Information Disclosure - Suspicious Comments",
+      "id": "10027",
+      "enabled": "true",
+      "quality": "release",
+      "status": "release"
+    },
+    {
+      "alertThreshold": "DEFAULT",
+      "name": "Weak Authentication Method",
+      "id": "10105",
+      "enabled": "true",
+      "quality": "release",
+      "status": "release"
+    },
+    {
+      "alertThreshold": "DEFAULT",
+      "name": "HTTP to HTTPS Insecure Transition in Form Post",
+      "id": "10041",
+      "enabled": "true",
+      "quality": "release",
+      "status": "release"
+    },
+    {
+      "alertThreshold": "DEFAULT",
+      "name": "HTTPS to HTTP Insecure Transition in Form Post",
+      "id": "10042",
+      "enabled": "true",
+      "quality": "release",
+      "status": "release"
+    },
+    {
+      "alertThreshold": "DEFAULT",
+      "name": "Insecure JSF ViewState",
+      "id": "90001",
+      "enabled": "true",
+      "quality": "release",
+      "status": "release"
+    },
+    {
+      "alertThreshold": "DEFAULT",
+      "name": "Java Serialization Object",
+      "id": "90002",
+      "enabled": "true",
+      "quality": "release",
+      "status": "release"
+    },
+    {
+      "alertThreshold": "DEFAULT",
+      "name": "Reverse Tabnabbing",
+      "id": "10108",
+      "enabled": "true",
+      "quality": "release",
+      "status": "release"
+    },
+    {
+      "alertThreshold": "DEFAULT",
+      "name": "Secure Pages Include Mixed Content",
+      "id": "10040",
+      "enabled": "true",
+      "quality": "release",
+      "status": "release"
+    },
+    {
+      "alertThreshold": "DEFAULT",
+      "name": "Modern Web Application",
+      "id": "10109",
+      "enabled": "true",
+      "quality": "release",
+      "status": "release"
+    },
+    {
+      "alertThreshold": "DEFAULT",
+      "name": "PII Disclosure",
+      "id": "10062",
+      "enabled": "true",
+      "quality": "release",
+      "status": "release"
+    },
+    {
+      "alertThreshold": "DEFAULT",
+      "name": "Script Served From Malicious Domain (polyfill)",
+      "id": "10115",
+      "enabled": "true",
+      "quality": "release",
+      "status": "release"
+    },
+    {
+      "alertThreshold": "DEFAULT",
+      "name": "Retrieved from Cache",
+      "id": "10050",
+      "enabled": "true",
+      "quality": "release",
+      "status": "release"
+    },
+    {
+      "alertThreshold": "DEFAULT",
+      "name": "HTTP Server Response Header",
+      "id": "10036",
+      "enabled": "true",
+      "quality": "release",
+      "status": "release"
+    },
+    {
+      "alertThreshold": "DEFAULT",
+      "name": "Strict-Transport-Security Header",
+      "id": "10035",
+      "enabled": "true",
+      "quality": "release",
+      "status": "release"
+    },
+    {
+      "alertThreshold": "DEFAULT",
+      "name": "Sub Resource Integrity Attribute Missing",
+      "id": "90003",
+      "enabled": "true",
+      "quality": "release",
+      "status": "release"
+    },
+    {
+      "alertThreshold": "DEFAULT",
+      "name": "Timestamp Disclosure",
+      "id": "10096",
+      "enabled": "true",
+      "quality": "release",
+      "status": "release"
+    },
+    {
+      "alertThreshold": "DEFAULT",
+      "name": "User Controllable Charset",
+      "id": "10030",
+      "enabled": "true",
+      "quality": "release",
+      "status": "release"
+    },
+    {
+      "alertThreshold": "DEFAULT",
+      "name": "Cookie Poisoning",
+      "id": "10029",
+      "enabled": "true",
+      "quality": "release",
+      "status": "release"
+    },
+    {
+      "alertThreshold": "DEFAULT",
+      "name": "User Controllable HTML Element Attribute (Potential XSS)",
+      "id": "10031",
+      "enabled": "true",
+      "quality": "release",
+      "status": "release"
+    },
+    {
+      "alertThreshold": "DEFAULT",
+      "name": "User Controllable JavaScript Event (XSS)",
+      "id": "10043",
+      "enabled": "true",
+      "quality": "release",
+      "status": "release"
+    },
+    {
+      "alertThreshold": "DEFAULT",
+      "name": "Off-site Redirect",
+      "id": "10028",
+      "enabled": "true",
+      "quality": "release",
+      "status": "release"
+    },
+    {
+      "alertThreshold": "DEFAULT",
+      "name": "Username Hash Found",
+      "id": "10057",
+      "enabled": "true",
+      "quality": "release",
+      "status": "release"
+    },
+    {
+      "alertThreshold": "DEFAULT",
+      "name": "Viewstate",
+      "id": "10032",
+      "enabled": "true",
+      "quality": "release",
+      "status": "release"
+    },
+    {
+      "alertThreshold": "DEFAULT",
+      "name": "X-AspNet-Version Response Header",
+      "id": "10061",
+      "enabled": "true",
+      "quality": "release",
+      "status": "release"
+    },
+    {
+      "alertThreshold": "DEFAULT",
+      "name": "X-Backend-Server Header Information Leak",
+      "id": "10039",
+      "enabled": "true",
+      "quality": "release",
+      "status": "release"
+    },
+    {
+      "alertThreshold": "DEFAULT",
+      "name": "X-ChromeLogger-Data (XCOLD) Header Information Leak",
+      "id": "10052",
+      "enabled": "true",
+      "quality": "release",
+      "status": "release"
+    },
+    {
+      "alertThreshold": "DEFAULT",
+      "name": "X-Content-Type-Options Header Missing",
+      "id": "10021",
+      "enabled": "true",
+      "quality": "release",
+      "status": "release"
+    },
+    {
+      "alertThreshold": "DEFAULT",
+      "name": "X-Debug-Token Information Leak",
+      "id": "10056",
+      "enabled": "true",
+      "quality": "release",
+      "status": "release"
+    },
+    {
+      "alertThreshold": "DEFAULT",
+      "name": "Server Leaks Information via \"X-Powered-By\" HTTP Response Header Field(s)",
+      "id": "10037",
+      "enabled": "true",
+      "quality": "release",
+      "status": "release"
+    },
+    {
+      "alertThreshold": "DEFAULT",
+      "name": "ZAP is Out of Date",
+      "id": "10116",
+      "enabled": "true",
+      "quality": "release",
+      "status": "release"
+    },
+    {
+      "alertThreshold": "DEFAULT",
+      "name": "Vulnerable JS Library (Powered by Retire.js)",
+      "id": "10003",
+      "enabled": "true",
+      "quality": "release",
+      "status": "release"
+    },
+    {
+      "alertThreshold": "DEFAULT",
+      "name": "Script Passive Scan Rules",
+      "id": "50001",
+      "enabled": "true",
+      "quality": "release",
+      "status": "release"
+    },
+    {
+      "alertThreshold": "DEFAULT",
+      "name": "Authentication Request Identified",
+      "id": "10111",
+      "enabled": "true",
+      "quality": "beta",
+      "status": "beta"
+    },
+    {
+      "alertThreshold": "DEFAULT",
+      "name": "Session Management Response Identified",
+      "id": "10112",
+      "enabled": "true",
+      "quality": "beta",
+      "status": "beta"
+    },
+    {
+      "alertThreshold": "DEFAULT",
+      "name": "Verification Request Identified",
+      "id": "10113",
+      "enabled": "true",
+      "quality": "beta",
+      "status": "beta"
+    },
+    {
+      "alertThreshold": "DEFAULT",
+      "name": "WSDL File Detection",
+      "id": "90030",
+      "enabled": "true",
+      "quality": "beta",
+      "status": "beta"
+    },
+    {
+      "alertThreshold": "DEFAULT",
+      "name": "Stats Passive Scan Rule",
+      "id": "50003",
+      "enabled": "true",
+      "quality": "release",
+      "status": "release"
+    }
+  ]
+}

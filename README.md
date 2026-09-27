@@ -1,212 +1,163 @@
 # Fintech Guard
 
-Projeto do bloco para uma API de apoio ao atendimento bancario.
+O Fintech Guard é uma API para classificar mensagens de atendimento bancário e
+sinalizar possíveis fraudes ou tentativas de engenharia social. A API usa JWT,
+guarda as predições com SQLModel e verifica se o usuário pode consultar cada
+registro. Por enquanto, o classificador usa regras simples; ainda não foi
+integrado um modelo treinado.
 
-Nesta primeira entrega eu deixei a base pronta: dataset analisado, API FastAPI
-rodando, login com JWT e documentacao de seguranca.
+O repositório reúne a API com os controles OWASP auditados pelo OWASP ZAP e a
+análise exploratória dos dados, organizada por entrega (TP1 e TP2). Veja
+[Dados e EDA](#dados-e-eda).
 
-O classificador ainda nao usa modelo treinado. Por enquanto o `/predict` usa
-regras simples, so para a rota ja funcionar.
+## Como executar
 
-## O que tem no projeto
-
-- API em FastAPI
-- rotas separadas em `app/api/routes/`
-- modelos SQLAlchemy em `app/models/`
-- banco SQLite local
-- autenticacao JWT com `OAuth2PasswordBearer`
-- EDA do BANKING77
-- DFD e analise CIA
-
-Rotas principais:
-
-- `GET /health`
-- `POST /auth/token`
-- `POST /predict`
-- `GET /auth/me`
-
-## Rodando localmente
-
-Use Python 3.12 ou mais novo.
+Requer Python 3.12 ou mais recente.
 
 ```bash
 git clone https://github.com/franciscocostadev/fintech-guard.git
 cd fintech-guard
-
 python3 -m venv .venv
 source .venv/bin/activate
-
-pip install -r requirements.txt
+pip install -r requirements-dev.txt
 cp .env.example .env
 ```
 
-Abra o `.env` e troque a `SECRET_KEY`. Para gerar uma chave:
+Gere uma chave para `SECRET_KEY`:
 
 ```bash
 python -c "import secrets; print(secrets.token_urlsafe(64))"
 ```
 
-Depois crie o banco e o usuario local:
+Edite `.env`, troque a chave de exemplo e confira as origens em `CORS_ORIGINS`.
+Depois, crie as tabelas e o usuário local:
 
 ```bash
 python -m scripts.seed
 ```
 
-Suba a API:
+Inicie a API com um worker:
 
 ```bash
-uvicorn app.main:app --host 127.0.0.1 --port 8000
+uvicorn app.main:app --host 127.0.0.1 --port 8000 --workers 1 --no-proxy-headers --no-server-header
 ```
 
-Links locais:
+Em desenvolvimento, a documentação interativa fica em
+<http://127.0.0.1:8000/docs>. Em produção, a documentação e o OpenAPI ficam
+desativados. As credenciais de `.env.example` são apenas para desenvolvimento;
+troque-as antes de criar o usuário.
 
-- http://127.0.0.1:8000
-- http://127.0.0.1:8000/docs
-- http://127.0.0.1:8000/health
+## Rotas
 
-Usuario criado pelo seed:
+| Rota | Acesso | Uso |
+| --- | --- | --- |
+| `GET /health` | Público | Verificar a API e o banco. |
+| `POST /auth/token` | Usuário e senha | Obter um JWT. |
+| `GET /auth/me` | JWT | Consultar o usuário autenticado. |
+| `POST /predict` | JWT | Classificar e registrar uma mensagem. A resposta traz o ID e o header `Location`. |
+| `GET /predictions/{id}` | JWT | Consultar uma predição própria. |
 
-```text
-usuario: analista
-senha: Troque@Esta#Senha123
-```
-
-## Testando por curl
-
-Health:
-
-```bash
-curl http://127.0.0.1:8000/health
-```
-
-Login:
+Com os valores padrão de `.env.example`, faça login em um banco recém-criado:
 
 ```bash
 curl -X POST http://127.0.0.1:8000/auth/token \
-  -d "username=analista&password=Troque@Esta#Senha123"
+  --data-urlencode 'username=analista' \
+  --data-urlencode 'password=Troque@Esta#Senha123'
 ```
 
-Use o `access_token` retornado no `/predict`:
+Se alterou `SEED_USERNAME` ou `SEED_PASSWORD` no `.env`, use esses valores.
+Passe o token recebido no header `Authorization` das outras rotas. Por exemplo:
 
 ```bash
-TOKEN="cole_o_token_aqui"
-
 curl -X POST http://127.0.0.1:8000/predict \
-  -H "Authorization: Bearer $TOKEN" \
-  -H "Content-Type: application/json" \
+  -H 'Authorization: Bearer <access_token>' \
+  -H 'Content-Type: application/json' \
   -d '{"message":"Meu cartão foi bloqueado, como desbloqueio?","channel":"chat"}'
 ```
 
-Exemplo de retorno:
+A resposta de `/predict` inclui o ID da predição. Consulte-o com
+`GET /predictions/<id>` usando o mesmo token; outro usuário recebe `404`.
 
-```json
-{
-  "intent": "cartao_bloqueado",
-  "confidence": 0.82,
-  "risk_level": "low",
-  "model_version": "regras-v1",
-  "detail": "Mensagem sobre bloqueio ou desbloqueio de cartão."
-}
+## Segurança
+
+Os bodies de entrada rejeitam campos que não fazem parte do modelo. As consultas
+e os modelos persistidos usam SQLModel; a consulta por ID também verifica o
+proprietário no banco. A API envia HSTS, X-Frame-Options,
+X-Content-Type-Options e Content-Security-Policy. HSTS só funciona sobre HTTPS,
+portanto a implantação deve configurar TLS e redirecionamento no proxy.
+
+CORS permite somente as origens configuradas em `CORS_ORIGINS`. O login aceita,
+por padrão, cinco tentativas por endereço IP em 300 segundos; depois responde
+`429` com `Retry-After`. O contador fica em memória e requer um worker. Para usar
+vários processos ou réplicas, é preciso migrá-lo para um contador compartilhado.
+Os detalhes e a justificativa estão em
+[docs/security-controls.md](docs/security-controls.md).
+
+As predições guardam o hash da mensagem, não o texto enviado.
+
+## Testes e ZAP
+
+Para executar os testes:
+
+```bash
+pytest tests/
 ```
 
-Sem token, o `/predict` retorna `401`.
+A suíte tem 43 testes: API, controles de segurança (acesso sem token, recurso
+de outro usuário, campo extra no body, headers, CORS e rate limiting) e os
+atributos usados na EDA. Na última execução registrada, todos passaram. A saída
+arquivada em [reports/security/pytest.txt](reports/security/pytest.txt) é da
+execução que acompanhou o scan, com os 37 testes de API existentes na época. O scan passivo final do
+OWASP ZAP não encontrou alertas High, Medium ou Low; registrou cinco alertas
+informativos. Os relatórios e a análise dos findings estão aqui:
 
-## Dataset e EDA por entrega
+- [Relatório ZAP em HTML](reports/security/zap-final/report.html)
+- [Relatório ZAP em JSON](reports/security/zap-final/report.json)
+- [Análise dos findings](docs/zap-findings.md)
+- [Resumo da execução e cobertura](reports/security/zap-final/execution.json)
 
-Os notebooks estão organizados primeiro por TP e depois por dataset. `01` indica a ordem dentro daquela entrega. Dados e scripts são compartilhados; cada notebook pode ser executado independentemente, a partir da raiz do projeto ou da sua própria pasta.
+## Dados e EDA
+
+O projeto usa dois conjuntos de dados, sem misturar suas classes:
+
+| Dataset | Papel | Documentação |
+| --- | --- | --- |
+| Multiclass NLP Dataset for Phishing and Social Engineering Threat Detection (Zenodo) | Principal para o desafio de identificar fraude e engenharia social. 603 mensagens em inglês e seis classes após a limpeza. | [docs/dataset_security.md](docs/dataset_security.md) |
+| BANKING77 | Complementar: intenções de atendimento bancário, em inglês, com 77 categorias. As categorias não são rótulos de fraude. | [docs/dataset_banking77.md](docs/dataset_banking77.md) |
+
+Os notebooks ficam separados por entrega e são versionados com as saídas da
+execução:
 
 | Entrega | Notebook | Conteúdo |
-|---|---|---|
-| TP1 | [BANKING77](notebooks/TP1/banking77/01_eda_banking77.ipynb) | EDA inicial com as correções do professor: describe completo, três gráficos e outputs. |
-| TP1 | [Segurança](notebooks/TP1/security/01_dataset_understanding.ipynb) | Entendimento, reconstrução e limpeza inicial do dataset de ameaças. |
-| TP2 | [Validação e EDA estatística](notebooks/TP2/security/01_validacao_e_eda_estatistica.ipynb) | EDA concluída: auditoria, sete atributos, heatmaps, scatter, boxplots e teste de hipótese interpretado. |
+| --- | --- | --- |
+| TP1 | [BANKING77](notebooks/TP1/banking77/01_eda_banking77.ipynb) | Shape, tipos, ausentes, `describe(include="all")`, limpeza e três visualizações. |
+| TP1 | [Segurança](notebooks/TP1/security/01_dataset_understanding.ipynb) | Reconstrução do arquivo original, qualidade e limpeza inicial. |
+| TP2 | [Validação e EDA estatística](notebooks/TP2/security/01_validacao_e_eda_estatistica.ipynb) | Auditoria dos dados, sete atributos textuais, heatmaps de correlação (Pearson e Spearman), scatter plots, boxplots e teste de Mann-Whitney com p-valor interpretado. |
 
-No TP2, o dataset de segurança é o principal para o desafio de identificação de ameaças. BANKING77 permanece complementar para intenções de atendimento; suas classes não são rótulos de fraude.
+O relatório de EDA do TP2 (problema, dados, análise, insights principais,
+limitações e próximos passos) está em
+[Markdown](reports/TP2/relatorio_eda.md) e [PDF](reports/TP2/relatorio_eda.pdf).
+As figuras e evidências ficam em `reports/TP1/` e `reports/TP2/`.
 
-- [Relatório de EDA do TP2 (Markdown)](reports/TP2/relatorio_eda.md)
-- [Relatório de EDA do TP2 (PDF)](reports/TP2/relatorio_eda.pdf)
-- [Auditoria de dados do TP2](reports/TP2/security_validation/README.md)
-- [Documentação BANKING77](docs/dataset_banking77.md)
-- [Documentação do dataset de segurança](docs/dataset_security.md)
-- Figuras da EDA inicial: `reports/TP1/figures/`.
+Principais resultados do TP2:
 
-Com as dependências de desenvolvimento instaladas, execute na raiz:
+- A classe benigna tem 171 mensagens e Pretexting, a menor, 65. A avaliação do
+  futuro modelo deve ser feita por classe.
+- Phishing e mensagens benignas têm medianas de comprimento próximas (111 e 108
+  caracteres). O Mann-Whitney deu p = 0,19, portanto não rejeitamos H₀. Phishing
+  tem dispersão maior e concentra as mensagens mais longas (até 3.693 caracteres).
+- Caracteres e palavras são quase redundantes (Spearman 0,96).
+- Phishing e Pretexting tinham rótulos conflitantes para textos iguais; esses
+  casos foram removidos e indicam classes difíceis de separar no TP3.
 
-```bash
-python -m scripts.execute_eda_notebook
-python -m scripts.execute_security_notebook --tp TP1
-python -m scripts.execute_security_notebook
-```
-
-O primeiro comando executa o BANKING77 do TP1; o segundo, segurança do TP1; o terceiro, segurança do TP2. A execução padrão de segurança é o TP2. Para somente revalidar os dados e gerar a auditoria: `python -m scripts.validate_security_dataset`.
-
-Os notebooks do TP1 preservam as análises daquela entrega. A evolução acontece no diretório do TP correspondente; correções posteriores de uma entrega devem ser identificadas no histórico Git. Não misture novas etapas do TP2 nos notebooks do TP1.
-
-## Seguranca
-
-O DFD fica em:
-
-- `docs/dfd.md`
-- `docs/dfd.png`
-
-A analise CIA fica em:
-
-- `docs/cia.md`
-
-Alguns cuidados que ja estao no codigo:
-
-- senha salva com bcrypt
-- token JWT com validade curta
-- `.env` fora do git
-- `/predict` exige `Authorization: Bearer`
-- texto completo da mensagem nao e salvo no banco, so o hash
-- erro de validacao nao devolve a mensagem enviada
-
-## Testes
+Para executar os notebooks novamente, com as dependências de desenvolvimento
+instaladas:
 
 ```bash
-pip install -r requirements-dev.txt
-pytest -q
+python -m scripts.execute_eda_notebook                 # TP1 — BANKING77
+python -m scripts.execute_security_notebook --tp TP1   # TP1 — segurança
+python -m scripts.execute_security_notebook            # TP2 — segurança
 ```
 
-## Estrutura
-
-```text
-app/
-  api/
-  core/
-  db/
-  models/
-  schemas/
-  services/
-data/
-  raw/
-  processed/
-docs/
-notebooks/
-  TP1/
-    banking77/
-    security/
-  TP2/
-    security/
-reports/
-  TP1/figures/
-  TP2/
-    relatorio_eda.md
-    relatorio_eda.pdf
-    security_validation/
-    security_features/
-    hypothesis_test/
-    figures/
-scripts/
-tests/
-```
-
-### TP2 — atributos exploratórios
-
-O notebook do TP2 calcula sete medidas textuais, com definições e evidências em [reports/TP2/security_features](reports/TP2/security_features/README.md). A implementação reutilizável está em `scripts/security_features.py`. As medidas não são indicadores comprovados de fraude.
-
-A análise foi validada com Python 3.13. Para o TP2, basta executar `python -m scripts.execute_security_notebook`; não é necessário reexecutar o TP1. Os arquivos históricos usados no protocolo são preservados byte a byte por `.gitattributes`. Uma alteração intencional do dataset ou da evidência histórica requer um novo protocolo, sem sobrescrever silenciosamente o original.
-
-
-A branch de EDA do TP2 parte da correção `fix/tp1-eda` (PR #1), ainda pendente de integração na data da preparação. Integrar o TP1 antes de revisar o diff final do TP2 contra `main`. Esta branch não inclui mudanças na API ou auditoria ZAP.
+O DFD e a análise CIA estão em [docs/dfd.md](docs/dfd.md) e
+[docs/cia.md](docs/cia.md).

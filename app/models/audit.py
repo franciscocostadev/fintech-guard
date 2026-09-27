@@ -1,31 +1,27 @@
 from datetime import datetime, timezone
 
-from sqlalchemy import DateTime, Float, Integer, String
-from sqlalchemy.orm import Mapped, mapped_column
-
-from app.db.session import Base
+from sqlalchemy import DateTime
+from sqlmodel import Field, SQLModel
 
 
-def _utcnow() -> datetime:
-    return datetime.now(timezone.utc)
+class PredictionLog(SQLModel, table=True):
+    """Classificação e proprietário; mantém compatibilidade com o banco existente.
 
-
-class PredictionLog(Base):
-    """Trilha das classificações feitas no /predict.
-
-    Guarda o hash da mensagem e não o texto, pra manter a rastreabilidade sem
-    criar mais um lugar com CPF e saldo dentro.
+    Guarda o hash da mensagem, nunca seu texto. O proprietário vem da sessão
+    autenticada, nunca do body ou de parâmetros enviados pelo cliente.
     """
 
     __tablename__ = "prediction_logs"
 
-    id: Mapped[int] = mapped_column(Integer, primary_key=True)
-    username: Mapped[str] = mapped_column(String(64), index=True, nullable=False)
-    message_hash: Mapped[str] = mapped_column(String(64), nullable=False)
-    message_length: Mapped[int] = mapped_column(Integer, nullable=False)
-    predicted_intent: Mapped[str] = mapped_column(String(64), nullable=False)
-    confidence: Mapped[float] = mapped_column(Float, nullable=False)
-    risk_level: Mapped[str] = mapped_column(String(16), nullable=False)
-    created_at: Mapped[datetime] = mapped_column(
-        DateTime(timezone=True), default=_utcnow, index=True, nullable=False
+    id: int | None = Field(default=None, primary_key=True)
+    username: str = Field(max_length=64, index=True)
+    message_hash: str = Field(max_length=64)
+    message_length: int
+    predicted_intent: str = Field(max_length=64)
+    confidence: float
+    risk_level: str = Field(max_length=16)
+    created_at: datetime = Field(
+        default_factory=lambda: datetime.now(timezone.utc),
+        sa_type=DateTime(timezone=True),
+        index=True,
     )

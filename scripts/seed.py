@@ -2,17 +2,19 @@
 
 from app.core.config import get_settings
 from app.core.security import hash_password
-from app.db.session import Base, SessionLocal, engine
+from sqlmodel import SQLModel, select
+
+from app.db.session import SessionLocal, engine
 from app.models import User
 
 
 def main() -> None:
     settings = get_settings()
-    Base.metadata.create_all(bind=engine)
+    SQLModel.metadata.create_all(bind=engine)
 
     with SessionLocal() as db:
         ja_existe = (
-            db.query(User).filter(User.username == settings.seed_username).first()
+            db.exec(select(User).where(User.username == settings.seed_username)).first()
         )
         if ja_existe:
             print(f"Usuário '{settings.seed_username}' já existe.")

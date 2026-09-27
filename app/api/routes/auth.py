@@ -1,64 +1,41 @@
 import logging
 from typing import Annotated
 
-from fastapi import APIRouter, Form, HTTPException, Request, status
+from fastapi import APIRouter, Form, HTTPException, status
+from sqlmodel import select
 
 from app.api.deps import CurrentUser, DbSession
-from app.core.config import get_settings
-from app.core.security import create_access_token, verify_password
+from app.core.security import create_access_token, hash_password, verify_password
 from app.models.user import User
-from app.schemas.auth import Token, UserPublic
-from app.services import rate_limit
+from app.schemas.auth import LoginRequest, Token, UserPublic
 
 logger = logging.getLogger(__name__)
 router = APIRouter(prefix="/auth", tags=["auth"])
-
-
-def _client_key(request: Request) -> str:
-    return request.client.host if request.client else "unknown"
+# Executa bcrypt também para usuários inexistentes, reduzindo enumeração por tempo.
+_DUMMY_HASH = hash_password("dummy-password-never-used-for-login")
 
 
 @router.post("/token", response_model=Token, summary="Gerar token")
-async def login_for_access_token(
-    request: Request,
+def login_for_access_token(
     db: DbSession,
-    username: Annotated[str, Form()],
-    password: Annotated[str, Form()],
+    credentials: Annotated[LoginRequest, Form()],
 ) -> Token:
-    settings = get_settings()
-    key = _client_key(request)
-
-    if rate_limit.is_blocked(
-        key, settings.login_max_attempts, settings.login_window_seconds
-    ):
-        logger.warning("Login bloqueado por rate limit: origem=%s", key)
-        raise HTTPException(
-            status_code=status.HTTP_429_TOO_MANY_REQUESTS,
-            detail="Muitas tentativas de login. Tente novamente mais tarde.",
-        )
-
-    user = db.query(User).filter(User.username == username).first()
-
-    # usuário inexistente, senha errada e conta inativa dão a mesma resposta,
-    # senão dá pra descobrir quem existe testando login
-    if (
-        user is None
-        or not user.is_active
-        or not verify_password(password, user.hashed_password)
-    ):
-        rate_limit.register_failure(key, settings.login_window_seconds)
-        logger.warning(
-            "Falha de autenticação: usuario=%s origem=%s", username, key
-        )
+    # O middleware reserva a tentativa atomicamente antes de validar/processar
+    # o body. Sucesso não zera o contador e toda chamada consome o limite.
+    user = db.exec(select(User).where(User.username == credentials.username)).first()
+    password_ok = verify_password(
+        credentials.password, user.hashed_password if user else _DUMMY_HASH
+    )
+    if user is None or not user.is_active or not password_ok:
+        logger.warning("Falha de autenticação")
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Usuário ou senha inválidos.",
             headers={"WWW-Authenticate": "Bearer"},
         )
 
-    rate_limit.reset(key)
     token, expires_in = create_access_token(subject=user.username, scopes=[user.role])
-    logger.info("Login autorizado: usuario=%s origem=%s", user.username, key)
+    logger.info("Login autorizado: usuario=%s", user.username)
     return Token(access_token=token, expires_in=expires_in)
 
 

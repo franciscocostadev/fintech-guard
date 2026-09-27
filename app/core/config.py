@@ -1,4 +1,5 @@
 from functools import lru_cache
+from urllib.parse import urlsplit
 
 from pydantic import Field, field_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
@@ -21,8 +22,8 @@ class Settings(BaseSettings):
     database_url: str = "sqlite:///./fintech_guard.db"
     cors_origins: str = "http://localhost:3000"
 
-    login_max_attempts: int = 5
-    login_window_seconds: int = 300
+    login_max_attempts: int = Field(default=5, ge=1, le=100)
+    login_window_seconds: int = Field(default=300, ge=1, le=3600)
 
     seed_username: str = "analista"
     seed_password: str = "Troque@Esta#Senha123"
@@ -34,6 +35,23 @@ class Settings(BaseSettings):
     @property
     def cors_origins_list(self) -> list[str]:
         return [o.strip() for o in self.cors_origins.split(",") if o.strip()]
+
+    @field_validator("cors_origins")
+    @classmethod
+    def _explicit_origins(cls, value: str) -> str:
+        origins = [origin.strip() for origin in value.split(",") if origin.strip()]
+        for origin in origins:
+            parsed = urlsplit(origin)
+            # Uma origem é apenas esquema, host e porta; não URL com caminho.
+            if (
+                "*" in origin or parsed.scheme not in {"http", "https"}
+                or not parsed.hostname or parsed.username or parsed.password
+                or parsed.path or parsed.query or parsed.fragment
+                or any(char.isspace() for char in origin)
+            ):
+                raise ValueError("CORS exige origens HTTP(S) explícitas, sem curingas ou caminhos.")
+            _ = parsed.port  # valida portas malformadas
+        return ",".join(dict.fromkeys(origins))
 
     @field_validator("secret_key")
     @classmethod
