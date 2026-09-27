@@ -1,7 +1,7 @@
 from collections.abc import AsyncGenerator
 
-from sqlalchemy import create_engine
-from sqlalchemy.orm import DeclarativeBase, Session, sessionmaker
+from sqlalchemy.orm import sessionmaker
+from sqlmodel import Session, create_engine
 
 from app.core.config import get_settings
 
@@ -18,11 +18,7 @@ engine = create_engine(
     echo=False,  # SQL no log acabaria expondo dado de cliente
 )
 
-SessionLocal = sessionmaker(bind=engine, autoflush=False, autocommit=False)
-
-
-class Base(DeclarativeBase):
-    pass
+SessionLocal = sessionmaker(bind=engine, class_=Session, autoflush=False)
 
 
 async def get_db() -> AsyncGenerator[Session, None]:

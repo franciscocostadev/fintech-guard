@@ -2,7 +2,7 @@ from typing import Annotated
 
 from fastapi import Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer
-from sqlalchemy.orm import Session
+from sqlmodel import Session, select
 
 from app.core.security import (
     ExpiredSignatureError,
@@ -45,7 +45,7 @@ async def get_current_user(
 
     # consultar o banco a cada request permite desativar um usuário sem
     # esperar o token expirar
-    user = db.query(User).filter(User.username == username).first()
+    user = db.exec(select(User).where(User.username == username)).first()
     if user is None or not user.is_active:
         raise CREDENTIALS_EXCEPTION
     return user

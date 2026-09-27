@@ -1,5 +1,5 @@
 from fastapi import APIRouter
-from sqlalchemy import text
+from sqlmodel import Session, select
 
 from app import __version__
 from app.core.config import get_settings
@@ -17,8 +17,8 @@ router = APIRouter(tags=["health"])
 async def health() -> HealthResponse:
     settings = get_settings()
     try:
-        with engine.connect() as conn:
-            conn.execute(text("SELECT 1"))
+        with Session(engine) as db:
+            db.exec(select(1)).one()
         db_status = "up"
     except Exception:
         # rota pública, então o motivo da falha não entra na resposta

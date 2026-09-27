@@ -55,7 +55,7 @@ python -m scripts.seed
 Suba a API:
 
 ```bash
-uvicorn app.main:app --host 127.0.0.1 --port 8000
+uvicorn app.main:app --host 127.0.0.1 --port 8000 --workers 1 --no-proxy-headers --no-server-header
 ```
 
 Links locais:
@@ -157,11 +157,17 @@ Alguns cuidados que ja estao no codigo:
 - texto completo da mensagem nao e salvo no banco, so o hash
 - erro de validacao nao devolve a mensagem enviada
 
+Controles implementados e limites operacionais: [docs/security-controls.md](docs/security-controls.md).
+Relatórios do scan passivo ZAP e tratamento de findings: [docs/zap-findings.md](docs/zap-findings.md).
+
+`POST /predict` também retorna `id` e `Location`. Consulte o resultado persistido
+com `GET /predictions/{id}` usando o token do proprietário; outro usuário recebe 404.
+
 ## Testes
 
 ```bash
 pip install -r requirements-dev.txt
-pytest -q
+pytest tests/
 ```
 
 ## Estrutura

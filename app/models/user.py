@@ -1,31 +1,21 @@
 from datetime import datetime, timezone
 
-from sqlalchemy import Boolean, DateTime, Integer, String
-from sqlalchemy.orm import Mapped, mapped_column
-
-from app.db.session import Base
+from sqlalchemy import DateTime
+from sqlmodel import Field, SQLModel
 
 
-def _utcnow() -> datetime:
-    return datetime.now(timezone.utc)
-
-
-class User(Base):
-    """Atendente/analista que consome a API."""
+class User(SQLModel, table=True):
+    """Atendente/analista. Username é único e não pode ser alterado pela API."""
 
     __tablename__ = "users"
 
-    id: Mapped[int] = mapped_column(Integer, primary_key=True)
-    username: Mapped[str] = mapped_column(
-        String(64), unique=True, index=True, nullable=False
+    id: int | None = Field(default=None, primary_key=True)
+    username: str = Field(max_length=64, unique=True, index=True)
+    hashed_password: str = Field(max_length=128)
+    full_name: str | None = Field(default=None, max_length=120)
+    role: str = Field(default="analyst", max_length=32)
+    is_active: bool = True
+    created_at: datetime = Field(
+        default_factory=lambda: datetime.now(timezone.utc),
+        sa_type=DateTime(timezone=True),
     )
-    hashed_password: Mapped[str] = mapped_column(String(128), nullable=False)
-    full_name: Mapped[str | None] = mapped_column(String(120), nullable=True)
-    role: Mapped[str] = mapped_column(String(32), default="analyst", nullable=False)
-    is_active: Mapped[bool] = mapped_column(Boolean, default=True, nullable=False)
-    created_at: Mapped[datetime] = mapped_column(
-        DateTime(timezone=True), default=_utcnow, nullable=False
-    )
-
-    def __repr__(self) -> str:
-        return f"<User {self.id} {self.username!r}>"

@@ -1,4 +1,4 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, Request
 from fastapi.responses import HTMLResponse, Response
 
 router = APIRouter(tags=["home"])
@@ -10,8 +10,8 @@ async def favicon() -> Response:
 
 
 @router.get("/", include_in_schema=False, response_class=HTMLResponse)
-async def home() -> str:
-    return """
+async def home(request: Request) -> str:
+    html = """
 <!doctype html>
 <html lang="pt-BR">
 <head>
@@ -172,10 +172,10 @@ async def home() -> str:
           <legend>Login</legend>
           <form id="loginForm">
             <label for="username">Usuário</label>
-            <input id="username" name="username" autocomplete="username" value="analista">
+            <input id="username" name="username" autocomplete="username">
 
             <label for="password">Senha</label>
-            <input id="password" name="password" type="password" autocomplete="current-password" value="Troque@Esta#Senha123">
+            <input id="password" name="password" type="password" autocomplete="current-password">
 
             <button type="submit">Gerar token</button>
           </form>
@@ -209,7 +209,7 @@ async def home() -> str:
   </div>
 
   <script>
-    let token = localStorage.getItem("fg_token") || "";
+    let token = "";
 
     const healthMsg = document.querySelector("#healthMsg");
     const loginMsg = document.querySelector("#loginMsg");
@@ -230,14 +230,23 @@ async def home() -> str:
         ["detail", data.detail]
       ];
 
-      result.innerHTML = `
-        <table>
-          <tbody>
-            ${rows.map(([key, value]) => `<tr><th>${key}</th><td>${value ?? ""}</td></tr>`).join("")}
-          </tbody>
-        </table>
-        <div class="raw">${JSON.stringify(data, null, 2)}</div>
-      `;
+      result.replaceChildren();
+      const table = document.createElement("table");
+      const tbody = document.createElement("tbody");
+      for (const [key, value] of rows) {
+        const row = document.createElement("tr");
+        const label = document.createElement("th");
+        const cell = document.createElement("td");
+        label.textContent = key;
+        cell.textContent = value ?? "";
+        row.append(label, cell);
+        tbody.append(row);
+      }
+      table.append(tbody);
+      const raw = document.createElement("div");
+      raw.className = "raw";
+      raw.textContent = JSON.stringify(data, null, 2);
+      result.append(table, raw);
     }
 
     async function checkHealth() {
@@ -267,7 +276,6 @@ async def home() -> str:
         if (!response.ok) throw new Error(data.detail || "Login recusado.");
 
         token = data.access_token;
-        localStorage.setItem("fg_token", token);
         setMsg(loginMsg, "Token gerado.", "ok");
       } catch (error) {
         setMsg(loginMsg, error.message, "erro");
@@ -282,7 +290,7 @@ async def home() -> str:
       }
 
       setMsg(predictMsg, "Enviando...", "muted");
-      result.innerHTML = "";
+      result.replaceChildren();
 
       try {
         const response = await fetch("/predict", {
@@ -313,3 +321,6 @@ async def home() -> str:
 </body>
 </html>
 """
+    return html.replace("<style>", f'<style nonce="{request.state.csp_nonce}">').replace(
+        "<script>", f'<script nonce="{request.state.csp_nonce}">'
+    )
