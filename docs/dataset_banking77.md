@@ -22,9 +22,9 @@ mensagens e 77 categorias.
 | `data/processed/banking77/train.csv` | treino depois da limpeza |
 | `data/processed/banking77/test.csv` | teste depois da limpeza |
 | `scripts/eda_banking77.py` | script da EDA |
-| `notebooks/banking77/01_eda_banking77.ipynb` | EDA em notebook |
-| `reports/figures/banking77_category_distribution.png` | barras por categoria |
-| `reports/figures/banking77_text_length_distribution.png` | histograma de tamanho do texto |
+| `notebooks/TP1/banking77/01_eda_banking77.ipynb` | EDA em notebook |
+| `reports/TP1/figures/banking77_category_distribution.png` | barras por categoria |
+| `reports/TP1/figures/banking77_text_length_distribution.png` | histograma de tamanho do texto |
 
 ## Colunas
 
@@ -116,8 +116,8 @@ Resultado final:
 
 Os graficos ficam em:
 
-- `reports/figures/banking77_category_distribution.png`
-- `reports/figures/banking77_text_length_distribution.png`
+- `reports/TP1/figures/banking77_category_distribution.png`
+- `reports/TP1/figures/banking77_text_length_distribution.png`
 
 ## Hipoteses sobre as intencoes
 
@@ -142,7 +142,7 @@ e `DataFrame.describe(include="all")` para treino e teste originais. Como ambas
 as colunas são textuais, o resumo apresenta `count`, `unique`, `top` e `freq`.
 O resumo do comprimento das mensagens permanece como análise complementar.
 
-A terceira visualização é `reports/figures/banking77_text_length_by_category.png`:
+A terceira visualização é `reports/TP1/figures/banking77_text_length_by_category.png`:
 boxplots das dez categorias com maior mediana de comprimento no treino limpo.
 Ela compara tendência central, dispersão e extremos, sem selecionar categorias
 com base no teste. O recorte não representa todas as 77 categorias e não implica

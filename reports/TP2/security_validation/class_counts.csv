@@ -1,0 +1,7 @@
+category,before,excluded_conflict,excluded_duplicate,after,percent_after
+Baiting,80,0,0,80,13.27
+Malware,78,0,1,77,12.77
+NOT-Malicious General Class,171,0,0,171,28.36
+Phishing,117,7,0,110,18.24
+Pretexting,78,8,5,65,10.78
+Scareware,100,0,0,100,16.58
