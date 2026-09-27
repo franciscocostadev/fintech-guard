@@ -134,3 +134,31 @@ Para reproduzir:
 ```bash
 python -m scripts.eda_banking77
 ```
+
+## Revisão da EDA após o feedback do TP1
+
+O notebook contém os resultados executados de `shape`, `dtypes`, valores ausentes
+e `DataFrame.describe(include="all")` para treino e teste originais. Como ambas
+as colunas são textuais, o resumo apresenta `count`, `unique`, `top` e `freq`.
+O resumo do comprimento das mensagens permanece como análise complementar.
+
+A terceira visualização é `reports/figures/banking77_text_length_by_category.png`:
+boxplots das dez categorias com maior mediana de comprimento no treino limpo.
+Ela compara tendência central, dispersão e extremos, sem selecionar categorias
+com base no teste. O recorte não representa todas as 77 categorias e não implica
+que as categorias com textos longos sejam necessariamente mais difíceis.
+
+Os três gráficos estão incorporados às células do notebook e salvos em PNG.
+O notebook mantém as contagens de execução e as saídas para inspeção direta.
+BANKING77 classifica intenções; esta EDA não valida um detector de fraude.
+
+Para executar novamente o notebook e salvar seus resultados, na raiz do projeto:
+
+```powershell
+uv pip install --python .venv/Scripts/python.exe -r requirements-dev.txt
+.\.venv\Scripts\python.exe -m scripts.execute_eda_notebook
+```
+
+O executor usa IPython no próprio processo Python, captura tabelas e imagens e
+só grava o notebook após todas as células concluírem sem erro. Também é possível
+abrir o notebook em um editor com suporte a Jupyter e executar todas as células.
