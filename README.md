@@ -1,191 +1,151 @@
 # Fintech Guard
 
-Projeto do bloco para uma API de apoio ao atendimento bancario.
+API FastAPI para classificar mensagens de atendimento bancário e sinalizar
+possíveis situações de fraude ou engenharia social. A API usa JWT, persiste
+resultados com SQLModel e verifica o proprietário em consultas por ID. O
+classificador atual usa regras simples; ainda não há um modelo de machine
+learning treinado.
 
-Nesta primeira entrega eu deixei a base pronta: dataset analisado, API FastAPI
-rodando, login com JWT e documentacao de seguranca.
+## Estado da entrega
 
-O classificador ainda nao usa modelo treinado. Por enquanto o `/predict` usa
-regras simples, so para a rota ja funcionar.
+Os controles de segurança da API, os testes e o scan passivo do OWASP ZAP estão
+implementados. O notebook do BANKING77 registra uma EDA inicial; a etapa
+avançada descrita abaixo continua pendente.
 
-## O que tem no projeto
+## Executar localmente
 
-- API em FastAPI
-- rotas separadas em `app/api/routes/`
-- modelos SQLAlchemy em `app/models/`
-- banco SQLite local
-- autenticacao JWT com `OAuth2PasswordBearer`
-- EDA do BANKING77
-- DFD e analise CIA
-
-Rotas principais:
-
-- `GET /health`
-- `POST /auth/token`
-- `POST /predict`
-- `GET /auth/me`
-
-## Rodando localmente
-
-Use Python 3.12 ou mais novo.
+Requer Python 3.12 ou mais recente.
 
 ```bash
 git clone https://github.com/franciscocostadev/fintech-guard.git
 cd fintech-guard
-
 python3 -m venv .venv
 source .venv/bin/activate
-
-pip install -r requirements.txt
+pip install -r requirements-dev.txt
 cp .env.example .env
 ```
 
-Abra o `.env` e troque a `SECRET_KEY`. Para gerar uma chave:
+Gere uma `SECRET_KEY` exclusiva antes de iniciar a API:
 
 ```bash
 python -c "import secrets; print(secrets.token_urlsafe(64))"
 ```
 
-Depois crie o banco e o usuario local:
+Edite `.env`, substitua a chave de exemplo e confira `CORS_ORIGINS`. Crie as
+tabelas e o usuário local definidos nessa configuração:
 
 ```bash
 python -m scripts.seed
 ```
 
-Suba a API:
+Inicie um worker local:
 
 ```bash
 uvicorn app.main:app --host 127.0.0.1 --port 8000 --workers 1 --no-proxy-headers --no-server-header
 ```
 
-Links locais:
+Em `ENVIRONMENT=development`, a documentação interativa fica em
+<http://127.0.0.1:8000/docs>. Em produção, a documentação e o OpenAPI ficam
+desabilitados. O exemplo de usuário e senha em `.env.example` serve apenas para
+desenvolvimento; altere-os antes de criar o usuário.
 
-- http://127.0.0.1:8000
-- http://127.0.0.1:8000/docs
-- http://127.0.0.1:8000/health
+## Rotas
 
-Usuario criado pelo seed:
+| Método e rota | Acesso | Descrição |
+| --- | --- | --- |
+| `GET /health` | Público | Estado da API e do banco. |
+| `POST /auth/token` | Formulário de usuário e senha | Emite um JWT. |
+| `GET /auth/me` | JWT obrigatório | Retorna o usuário do token atual. |
+| `POST /predict` | JWT obrigatório | Classifica e registra uma mensagem. Retorna o ID e o header `Location`. |
+| `GET /predictions/{id}` | JWT obrigatório | Retorna uma predição somente ao seu proprietário. |
 
-```text
-usuario: analista
-senha: Troque@Esta#Senha123
-```
-
-## Testando por curl
-
-Health:
-
-```bash
-curl http://127.0.0.1:8000/health
-```
-
-Login:
+Exemplo de login local:
 
 ```bash
 curl -X POST http://127.0.0.1:8000/auth/token \
-  -d "username=analista&password=Troque@Esta#Senha123"
+  -d 'username=analista&password=troque-esta-senha'
 ```
 
-Use o `access_token` retornado no `/predict`:
+Use o `access_token` da resposta para classificar uma mensagem:
 
 ```bash
-TOKEN="cole_o_token_aqui"
-
 curl -X POST http://127.0.0.1:8000/predict \
-  -H "Authorization: Bearer $TOKEN" \
-  -H "Content-Type: application/json" \
+  -H 'Authorization: Bearer <access_token>' \
+  -H 'Content-Type: application/json' \
   -d '{"message":"Meu cartão foi bloqueado, como desbloqueio?","channel":"chat"}'
 ```
 
-Exemplo de retorno:
+O retorno inclui `id`. Para consultar a predição salva, chame
+`GET /predictions/<id>` com o mesmo token; outro usuário recebe `404`.
 
-```json
-{
-  "intent": "cartao_bloqueado",
-  "confidence": 0.82,
-  "risk_level": "low",
-  "model_version": "regras-v1",
-  "detail": "Mensagem sobre bloqueio ou desbloqueio de cartão."
-}
+## Controles de segurança
+
+- Todos os modelos de entrada da API rejeitam campos extras (`extra="forbid"`).
+- Persistência e consultas usam SQLModel; a rota por ID aplica o filtro de
+  proprietário na própria consulta.
+- Middleware define HSTS, X-Frame-Options, X-Content-Type-Options e CSP. HSTS
+  só é efetivo sob HTTPS; configure TLS e o redirecionamento no proxy de
+  produção.
+- CORS usa a allowlist exata definida em `CORS_ORIGINS`; não use `*`.
+- `/auth/token` limita por padrão **5 tentativas por IP em 300 segundos** e
+  devolve `429` com `Retry-After` ao esgotar o limite.
+- O limitador em memória suporta um worker. Para várias réplicas, substitua-o
+  por um contador compartilhado; os detalhes e a justificativa estão em
+  [docs/security-controls.md](docs/security-controls.md).
+- O texto das mensagens não é salvo no log de predições; é armazenado somente
+  seu hash e o resultado da classificação.
+
+## Testes e relatório ZAP
+
+Execute a suite com:
+
+```bash
+pytest tests/
 ```
 
-Sem token, o `/predict` retorna `401`.
+Evidências e análise do scan passivo do ZAP:
 
-## Dataset e EDA
+- [Relatório HTML final](reports/security/zap-final/report.html)
+- [Relatório JSON final](reports/security/zap-final/report.json)
+- [Findings, severidades e correções](docs/zap-findings.md)
+- [Execução e cobertura do scan](reports/security/zap-final/execution.json)
 
-O dataset principal e o BANKING77. Ele tem mensagens de atendimento bancario e
-77 categorias de intencao.
+O scan final registrou zero findings High, Medium ou Low; restaram alertas
+informativos. O relatório documenta o escopo e as limitações da análise.
 
-Arquivos:
+## Dados e EDA
 
-- `data/raw/banking77/`
-- `data/processed/banking77/`
-- `notebooks/banking77/01_eda_banking77.ipynb`
-- `scripts/eda_banking77.py`
-- `docs/dataset_banking77.md`
-- `reports/figures/`
+O dataset principal da classificação bancária é o [BANKING77](docs/dataset_banking77.md),
+com as mensagens em inglês distribuídas entre 77 categorias de intenção. Os
+arquivos originais e processados ficam em `data/raw/banking77/` e
+`data/processed/banking77/`.
 
-Para refazer a limpeza e os graficos:
+Reproduza a limpeza e a EDA inicial com:
 
 ```bash
 python -m scripts.eda_banking77
 ```
 
-Tambem deixei no repositorio um notebook de seguranca para apoiar as proximas
-etapas:
+O notebook correspondente é
+[notebooks/banking77/01_eda_banking77.ipynb](notebooks/banking77/01_eda_banking77.ipynb).
+Ele inclui checagens de qualidade, distribuição de categorias, comprimentos de
+mensagens e hipóteses qualitativas. **Ainda faltam para a EDA avançada desta
+entrega:** heatmap de correlação, scatter plots, teste de hipótese com p-valor
+interpretado, outputs salvos nas células do notebook e relatório de EDA do
+BANKING77 com problema, dados, análise, insights, limitações e próximos passos.
+Os gráficos atuais ficam em `reports/figures/`.
 
-- `notebooks/security/01_dataset_understanding.ipynb`
-- `docs/dataset_security.md`
+O repositório também contém uma análise exploratória separada de um dataset de
+phishing e engenharia social em
+[notebooks/security/01_dataset_understanding.ipynb](notebooks/security/01_dataset_understanding.ipynb),
+documentada em [docs/dataset_security.md](docs/dataset_security.md). Ela não
+substitui as análises pendentes do BANKING77.
 
-## Seguranca
+Diagramas e contexto adicional: [DFD](docs/dfd.md) e [análise CIA](docs/cia.md).
 
-O DFD fica em:
+## Uso de ferramentas de IA
 
-- `docs/dfd.md`
-- `docs/dfd.png`
-
-A analise CIA fica em:
-
-- `docs/cia.md`
-
-Alguns cuidados que ja estao no codigo:
-
-- senha salva com bcrypt
-- token JWT com validade curta
-- `.env` fora do git
-- `/predict` exige `Authorization: Bearer`
-- texto completo da mensagem nao e salvo no banco, so o hash
-- erro de validacao nao devolve a mensagem enviada
-
-Controles implementados e limites operacionais: [docs/security-controls.md](docs/security-controls.md).
-Relatórios do scan passivo ZAP e tratamento de findings: [docs/zap-findings.md](docs/zap-findings.md).
-
-`POST /predict` também retorna `id` e `Location`. Consulte o resultado persistido
-com `GET /predictions/{id}` usando o token do proprietário; outro usuário recebe 404.
-
-## Testes
-
-```bash
-pip install -r requirements-dev.txt
-pytest tests/
-```
-
-## Estrutura
-
-```text
-app/
-  api/
-  core/
-  db/
-  models/
-  schemas/
-  services/
-data/
-  raw/
-  processed/
-docs/
-notebooks/
-reports/
-scripts/
-tests/
-```
+O OpenAI ChatGPT foi utilizado em 26 e 27 de setembro de 2026 como apoio à
+revisão do repositório, implementação e documentação dos controles de segurança
+da API e dos testes. A análise e as conclusões devem ser verificadas pelos
+autores antes da entrega. Referência: OpenAI. (2026). *ChatGPT*. <https://chatgpt.com/>.
