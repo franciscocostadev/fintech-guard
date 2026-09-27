@@ -65,9 +65,10 @@ Arquivo tratado:
 
 - `data/processed/security/phishing_nlp_dataset.csv`
 
-Notebook:
+Notebooks por entrega:
 
-- `notebooks/security/01_dataset_understanding.ipynb`
+- TP1: `notebooks/TP1/security/01_dataset_understanding.ipynb` — análise inicial.
+- TP2: `notebooks/TP2/security/01_validacao_e_eda_estatistica.ipynb` — revalidação e aprofundamento estatístico.
 
 ## Problema estrutural do arquivo original
 
@@ -96,7 +97,7 @@ Os seis grupos com rótulos contraditórios foram removidos integralmente, total
 
 Depois da remoção dos conflitos, as repetições do mesmo texto normalizado e da mesma categoria foram deduplicadas, removendo 6 ocorrências excedentes. A normalização com `strip()` e `lower()` foi utilizada somente como chave de comparação; capitalização, pontuação e texto original dos registros mantidos foram preservados.
 
-Mensagens longas não foram removidas, pois representam narrativas legítimas de fraude. Nenhum balanceamento foi aplicado nesta etapa.
+Mensagens longas não foram removidas: o comprimento, por si só, não é evidência de erro de reconstrução ou justificativa para excluir exemplos rotulados como phishing. Nenhum balanceamento foi aplicado nesta etapa.
 
 ## Validação final
 
@@ -117,3 +118,21 @@ Mensagens longas não foram removidas, pois representam narrativas legítimas de
 - ausência de inspeção manual exaustiva de todas as mensagens.
 
 Antes do treinamento, o conjunto deverá ser dividido de forma estratificada. Técnicas de balanceamento, se necessárias, deverão ser aplicadas somente ao treino. O desempenho deverá ser avaliado com Accuracy, Precision, Recall, F1-score por classe e matriz de confusão.
+
+## Revalidação no TP2 — 23/09/2026
+
+Reconstrução e limpeza reproduzidas: **624 − 15 − 6 = 603 mensagens**. Excel preservado e CSVs existentes idênticos em valores e ordem. O MD5 local coincide com o publicado no [Zenodo](https://zenodo.org/records/15235123): `7213a3ee515a713f4eee2a6948f1756e`. O campo de licença da página consultada continua sem identificação explícita.
+
+| Categoria | Antes | Conflitos excluídos | Duplicatas excluídas | Depois | % final |
+|---|---:|---:|---:|---:|---:|
+| Baiting | 80 | 0 | 0 | 80 | 13,27% |
+| Malware | 78 | 0 | 1 | 77 | 12,77% |
+| NOT-Malicious General Class | 171 | 0 | 0 | 171 | 28,36% |
+| Phishing | 117 | 7 | 0 | 110 | 18,24% |
+| Pretexting | 78 | 8 | 5 | 65 | 10,78% |
+| Scareware | 100 | 0 | 0 | 100 | 16,58% |
+| **Total** | **624** | **15** | **6** | **603** | **100%** |
+
+A auditoria completa está em `reports/TP2/security_validation/row_audit.csv`; as exclusões estão em `excluded_rows.csv`. A preservação se refere ao texto **após a reconstrução**, que junta fragmentos com um espaço e aplica `strip()`. A escolha por excluir todos os rótulos conflitantes evita arbitrar classes, mas remove casos ambíguos e pode tornar uma avaliação futura mais fácil.
+
+Reprodução: `python -m scripts.validate_security_dataset` e `python -m scripts.execute_security_notebook`. O relatório do TP2 fica em `reports/TP2/relatorio_eda.md`.

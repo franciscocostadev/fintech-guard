@@ -1,0 +1,8 @@
+feature,dtype,missing,unique_values,zero_count
+n_chars,int64,0,188,0
+n_words,int64,0,77,0
+mean_word_length,float64,0,329,0
+digit_ratio,float64,0,50,551
+uppercase_ratio,float64,0,259,0
+n_links,int64,0,1,603
+n_exclamations,int64,0,3,567

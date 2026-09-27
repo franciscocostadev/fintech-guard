@@ -1,0 +1,9 @@
+# Preserve os bytes usados nos hashes do protocolo histórico da EDA.
+data/interim/security/phishing_nlp_dataset.csv -text
+data/processed/security/phishing_nlp_dataset.csv -text
+notebooks/TP1/security/01_dataset_understanding.ipynb -text
+reports/TP2/hypothesis_test/protocol.json -text
+
+*.pdf binary
+notebooks/TP1/security/01_dataset_understanding.ipynb whitespace=cr-at-eol
+reports/TP2/hypothesis_test/protocol.json whitespace=cr-at-eol

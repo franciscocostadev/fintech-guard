@@ -7,7 +7,7 @@ import pandas as pd
 ROOT = Path(__file__).resolve().parents[1]
 RAW_DIR = ROOT / "data" / "raw" / "banking77"
 PROCESSED_DIR = ROOT / "data" / "processed" / "banking77"
-FIGURES_DIR = ROOT / "reports" / "figures"
+FIGURES_DIR = ROOT / "reports" / "TP1" / "figures"
 
 
 def load_split(name: str) -> pd.DataFrame:

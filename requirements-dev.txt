@@ -7,3 +7,9 @@ anyio==3.7.1
 nbformat==5.11.1
 ipykernel==7.3.0
 ipython==9.17.1
+
+# Visualizações da EDA do TP2
+seaborn==0.13.2
+
+# Teste de hipótese exploratório do TP2
+scipy==1.18.1

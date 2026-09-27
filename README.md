@@ -111,31 +111,36 @@ Exemplo de retorno:
 
 Sem token, o `/predict` retorna `401`.
 
-## Dataset e EDA
+## Dataset e EDA por entrega
 
-O dataset principal e o BANKING77. Ele tem mensagens de atendimento bancario e
-77 categorias de intencao.
+Os notebooks estão organizados primeiro por TP e depois por dataset. `01` indica a ordem dentro daquela entrega. Dados e scripts são compartilhados; cada notebook pode ser executado independentemente, a partir da raiz do projeto ou da sua própria pasta.
 
-Arquivos:
+| Entrega | Notebook | Conteúdo |
+|---|---|---|
+| TP1 | [BANKING77](notebooks/TP1/banking77/01_eda_banking77.ipynb) | EDA inicial com as correções do professor: describe completo, três gráficos e outputs. |
+| TP1 | [Segurança](notebooks/TP1/security/01_dataset_understanding.ipynb) | Entendimento, reconstrução e limpeza inicial do dataset de ameaças. |
+| TP2 | [Validação e EDA estatística](notebooks/TP2/security/01_validacao_e_eda_estatistica.ipynb) | EDA concluída: auditoria, sete atributos, heatmaps, scatter, boxplots e teste de hipótese interpretado. |
 
-- `data/raw/banking77/`
-- `data/processed/banking77/`
-- `notebooks/banking77/01_eda_banking77.ipynb`
-- `scripts/eda_banking77.py`
-- `docs/dataset_banking77.md`
-- `reports/figures/`
+No TP2, o dataset de segurança é o principal para o desafio de identificação de ameaças. BANKING77 permanece complementar para intenções de atendimento; suas classes não são rótulos de fraude.
 
-Para refazer a limpeza e os graficos:
+- [Relatório de EDA do TP2 (Markdown)](reports/TP2/relatorio_eda.md)
+- [Relatório de EDA do TP2 (PDF)](reports/TP2/relatorio_eda.pdf)
+- [Auditoria de dados do TP2](reports/TP2/security_validation/README.md)
+- [Documentação BANKING77](docs/dataset_banking77.md)
+- [Documentação do dataset de segurança](docs/dataset_security.md)
+- Figuras da EDA inicial: `reports/TP1/figures/`.
+
+Com as dependências de desenvolvimento instaladas, execute na raiz:
 
 ```bash
-python -m scripts.eda_banking77
+python -m scripts.execute_eda_notebook
+python -m scripts.execute_security_notebook --tp TP1
+python -m scripts.execute_security_notebook
 ```
 
-Tambem deixei no repositorio um notebook de seguranca para apoiar as proximas
-etapas:
+O primeiro comando executa o BANKING77 do TP1; o segundo, segurança do TP1; o terceiro, segurança do TP2. A execução padrão de segurança é o TP2. Para somente revalidar os dados e gerar a auditoria: `python -m scripts.validate_security_dataset`.
 
-- `notebooks/security/01_dataset_understanding.ipynb`
-- `docs/dataset_security.md`
+Os notebooks do TP1 preservam as análises daquela entrega. A evolução acontece no diretório do TP correspondente; correções posteriores de uma entrega devem ser identificadas no histórico Git. Não misture novas etapas do TP2 nos notebooks do TP1.
 
 ## Seguranca
 
@@ -179,7 +184,29 @@ data/
   processed/
 docs/
 notebooks/
+  TP1/
+    banking77/
+    security/
+  TP2/
+    security/
 reports/
+  TP1/figures/
+  TP2/
+    relatorio_eda.md
+    relatorio_eda.pdf
+    security_validation/
+    security_features/
+    hypothesis_test/
+    figures/
 scripts/
 tests/
 ```
+
+### TP2 — atributos exploratórios
+
+O notebook do TP2 calcula sete medidas textuais, com definições e evidências em [reports/TP2/security_features](reports/TP2/security_features/README.md). A implementação reutilizável está em `scripts/security_features.py`. As medidas não são indicadores comprovados de fraude.
+
+A análise foi validada com Python 3.13. Para o TP2, basta executar `python -m scripts.execute_security_notebook`; não é necessário reexecutar o TP1. Os arquivos históricos usados no protocolo são preservados byte a byte por `.gitattributes`. Uma alteração intencional do dataset ou da evidência histórica requer um novo protocolo, sem sobrescrever silenciosamente o original.
+
+
+A branch de EDA do TP2 parte da correção `fix/tp1-eda` (PR #1), ainda pendente de integração na data da preparação. Integrar o TP1 antes de revisar o diff final do TP2 contra `main`. Esta branch não inclui mudanças na API ou auditoria ZAP.

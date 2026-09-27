@@ -52,6 +52,7 @@ def _setup_db():
         db.commit()
     yield
     Base.metadata.drop_all(bind=engine)
+    engine.dispose()
     os.close(_db_fd)
     os.unlink(_db_path)
 

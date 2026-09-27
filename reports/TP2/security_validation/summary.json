@@ -1,0 +1,75 @@
+{
+  "source": "https://zenodo.org/records/15235123",
+  "raw_md5": "7213a3ee515a713f4eee2a6948f1756e",
+  "raw_sha256": "651fb58e1a3ff7808aad12eb5a24a44dc0ba95a4f4da356640d17a830dd8bd32",
+  "raw_shape": [
+    624,
+    2
+  ],
+  "raw_dtypes": {
+    "Corpus": "object",
+    "Labels": "object"
+  },
+  "raw_missing": {
+    "Corpus": 0,
+    "Labels": 621
+  },
+  "split_message_excel_rows": [
+    382,
+    390,
+    404
+  ],
+  "reconstructed_shape": [
+    624,
+    2
+  ],
+  "reconstructed_dtypes": {
+    "text": "object",
+    "category": "object"
+  },
+  "reconstructed_missing": {
+    "text": 0,
+    "category": 0
+  },
+  "exact_duplicate_excess": 9,
+  "rows_in_exact_duplicates": 14,
+  "rows_in_normalized_duplicates": 24,
+  "conflicting_normalized_groups": 6,
+  "excluded_conflict_rows": 15,
+  "excluded_duplicate_rows": 6,
+  "clean_shape": [
+    603,
+    2
+  ],
+  "classes": [
+    "Baiting",
+    "Malware",
+    "NOT-Malicious General Class",
+    "Phishing",
+    "Pretexting",
+    "Scareware"
+  ],
+  "clean_dtypes": {
+    "text": "object",
+    "category": "object"
+  },
+  "clean_missing": {
+    "text": 0,
+    "category": 0
+  },
+  "clean_normalized_duplicates": 0,
+  "retained_texts_equal_to_reconstructed": true,
+  "text_preservation_scope": "Preserva texto reconstruído; reconstrução aplica strip e junta fragmentos com um espaço.",
+  "existing_csv_comparisons": {
+    "data/interim/security/phishing_nlp_dataset.csv": {
+      "equal_values_and_order": true,
+      "sha256": "8d28b8b8f8dccf7881b4b382191d86408ec2a5201032f8c4f982078f8afcbb94"
+    },
+    "data/processed/security/phishing_nlp_dataset.csv": {
+      "equal_values_and_order": true,
+      "sha256": "b416c4362ef0447340770b7c73a57d5705ecc8bbeaf2efc1c2a0de632707d5c1"
+    }
+  },
+  "pandas_version": "2.2.3",
+  "checks_passed": true
+}
