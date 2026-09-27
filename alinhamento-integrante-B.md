@@ -1,7 +1,5 @@
 # Fintech Guard
 
-Documento de alinhamento do integrante B: [alinhamento-integrante-B.md](alinhamento-integrante-B.md).
-
 API FastAPI para classificar mensagens de atendimento bancário e sinalizar
 possíveis situações de fraude ou engenharia social. A API usa JWT, persiste
 resultados com SQLModel e verifica o proprietário em consultas por ID. O
