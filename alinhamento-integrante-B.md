@@ -1,72 +1,54 @@
-# Revisão do documento do integrante B
+# Revisão do material do integrante B
 
-**Data da revisão:** 27 de setembro de 2026
+O texto enviado pelo integrante B descreve o README e o estado atual do projeto.
+Conferi as informações com o código, os notebooks e os relatórios versionados.
+Em geral, estão corretas; há um erro pequeno no comando de login e uma ressalva
+sobre a redação da rubrica.
 
-**Material analisado:** texto anexado com a versão proposta do README
+## API e segurança
 
-**Resultado:** conteúdo em geral alinhado ao repositório; um exemplo de login foi corrigido. As lacunas da EDA estão corretamente identificadas.
+A descrição da API bate com o código: usa JWT, persiste com SQLModel e filtra as
+consultas por ID pelo usuário autenticado. Os headers, a allowlist CORS e o
+limite de cinco tentativas por IP em cinco minutos também estão configurados.
+Esse limite é mantido em memória, então pressupõe um único worker — ponto que o
+texto já informa.
 
-Esta revisão compara o material preparado pelo integrante B com o código, os
-notebooks e as evidências versionadas. O conteúdo do anexo é atribuído ao
-integrante B; esta página registra as verificações e a correção identificada.
+O relatório final do ZAP registra cinco alertas informativos e nenhum alerta
+High, Medium ou Low. A evidência da execução está em
+[reports/security/zap-final/execution.json](reports/security/zap-final/execution.json).
+A saída versionada do pytest registra 37 testes aprovados, incluindo os casos
+sem token, de acesso à predição de outro usuário e de envio de campos extras.
 
-## Conferência das afirmações
+## EDA
 
-| Assunto | Verificação no repositório | Resultado |
-| --- | --- | --- |
-| API com JWT e classificação por regras | Implementados em `app/core/security.py` e `app/services/predictor.py`. Não há modelo de machine learning treinado. | Alinhado. |
-| SQLModel e ownership nas consultas por ID | `GET /predictions/{prediction_id}` filtra simultaneamente pelo ID e pelo usuário autenticado. | Alinhado. |
-| Headers e CORS | Middleware define HSTS, X-Frame-Options, X-Content-Type-Options e CSP. CORS usa uma lista explícita de origens configuradas. | Alinhado. |
-| Limite do login | `/auth/token` limita 5 tentativas por IP em 300 segundos. O contador em memória exige um worker e essa limitação está documentada. | Alinhado; convém manter a ressalva de um worker. |
-| Resultado do ZAP | O relatório do scan passivo final registra 0 findings High, Medium ou Low e 5 alertas Informational. | Alinhado com `reports/security/zap-final/execution.json`. |
-| Testes | A evidência versionada registra 37 testes aprovados. Há casos de token ausente, tentativa de acesso a predição alheia e campo extra. | Alinhado com `reports/security/pytest.txt` e `tests/`. |
-| Estado da EDA BANKING77 | O notebook tem checagens iniciais, dois gráficos e hipóteses qualitativas. As células não têm outputs salvos; não há heatmap, scatter plot nem teste formal com p-valor. | Correto indicar esses itens como pendentes. |
-| Relatório da EDA BANKING77 | `docs/dataset_banking77.md` resume fonte, colunas, limpeza, gráficos e hipóteses; não contém todas as seções de relatório pedidas nesta entrega. | Lacuna corretamente apontada. O relatório de phishing é de outro dataset. |
-| Declaração de uso de IA | A versão atual do README tem uma declaração e referência ao ChatGPT. | Alinhado com a instrução de citar ferramentas de IA. |
+O texto acerta ao dizer que a EDA avançada ainda falta. O notebook do BANKING77
+mostra duas visualizações, mas não tem heatmap, scatter plots ou teste formal de
+hipótese com p-valor. Suas células também não guardam outputs. O documento atual
+sobre o BANKING77 cobre fonte, dados, limpeza e hipóteses, mas ainda não tem todas
+as seções pedidas para o relatório da entrega. O notebook e relatório de
+phishing são de outro conjunto e não preenchem essas lacunas.
 
-## Correção aplicada ao exemplo de login
+O parecer recebido menciona três visualizações e uma chamada direta a
+`DataFrame.describe()`. Esses dois critérios não aparecem literalmente no
+enunciado enviado. O notebook aplica `describe()` aos comprimentos de mensagens
+(`Series`), não a todo o dataframe. Se esses requisitos extras vierem de uma
+rubrica confirmada pelo professor, acrescente o resumo geral e os gráficos
+solicitados. O que o enunciado pede explicitamente — heatmap, scatter plots e
+teste de hipótese — continua pendente de qualquer forma.
 
-O texto anexado usava `password=troque-esta-senha`, que não corresponde ao
-`SEED_PASSWORD` de exemplo (`Troque@Esta#Senha123`) em `.env.example`. O valor
-foi corrigido no README. No banco recém-criado sem alterar os valores do arquivo
-de exemplo, o login é:
+## Ajuste feito no login
 
-```bash
-curl -X POST http://127.0.0.1:8000/auth/token \
-  --data-urlencode 'username=analista' \
-  --data-urlencode 'password=Troque@Esta#Senha123'
-```
+O comando do texto usava `troque-esta-senha`, mas a senha de exemplo em
+`.env.example` é `Troque@Esta#Senha123`. Corrigi o comando no README e usei
+`--data-urlencode` para enviar a senha corretamente. Se os valores de
+`SEED_USERNAME` e `SEED_PASSWORD` foram alterados, o comando deve usar as novas
+credenciais.
 
-Use as credenciais configuradas em `SEED_USERNAME` e `SEED_PASSWORD` se tiver
-alterado `.env`. Para produção, substitua sempre os valores de desenvolvimento.
+O material analisado foi preparado pelo integrante B. Esta revisão conferiu os
+pontos factuais e não altera a autoria do texto original.
 
-## Itens que continuam pendentes na entrega
+## Uso de IA nesta revisão
 
-O texto do integrante B não deve apresentar a EDA avançada como concluída. Para
-fechar a rubrica ainda é preciso:
-
-1. Acrescentar ao notebook do BANKING77 o heatmap de correlação, scatter plots e
-   um teste de hipótese (t-test ou Mann–Whitney via SciPy), com hipótese, p-valor
-   e interpretação acessível.
-2. Executar o notebook e salvar suas saídas, inclusive dimensões, tipos, valores
-   ausentes, estatísticas descritivas e gráficos.
-3. Completar um relatório `.md` ou `.pdf` próprio para o BANKING77 com problema,
-   dados, análise, insights principais, limitações e próximos passos do
-   classificador.
-
-O texto apresentado pelo integrante descreve corretamente as lacunas principais
-em vez de alegar que a EDA avançada já está pronta. O requisito de declarar o uso
-de IA deve permanecer na entrega; ele já aparece no README.
-
-### Precisão em relação à rubrica enviada
-
-O enunciado colado exige heatmap de correlação, scatter plots e um teste de
-hipótese formal. Esses requisitos explícitos faltam no notebook do BANKING77.
-O parecer recebido também menciona um mínimo de três visualizações e uma chamada
-literal a `DataFrame.describe()`, mas essas exigências não aparecem com essas
-palavras no enunciado colado. O notebook calcula `describe()` para os comprimentos
-das mensagens (`Series`), não para o dataframe inteiro. Se o docente confirmar
-que os dois critérios extras pertencem à rubrica oficial, vale adicionar também
-um resumo `DataFrame.describe(include="all")` e garantir ao menos três gráficos
-no notebook do BANKING77. O segundo notebook contém gráficos de outro dataset e
-não substitui os gráficos pedidos para o BANKING77.
+O ChatGPT, da OpenAI, ajudou a comparar o texto com o repositório e a registrar
+as correções. A atividade pede que esse apoio seja citado. Referência: OpenAI.
+(2026). *ChatGPT*. <https://chatgpt.com/>.

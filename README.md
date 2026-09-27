@@ -1,20 +1,17 @@
 # Fintech Guard
 
-Revisão do material preparado pelo integrante B: [alinhamento-integrante-B.md](alinhamento-integrante-B.md).
+O Fintech Guard é uma API para classificar mensagens de atendimento bancário e
+sinalizar possíveis fraudes ou tentativas de engenharia social. A API usa JWT,
+guarda as predições com SQLModel e verifica se o usuário pode consultar cada
+registro. Por enquanto, o classificador usa regras simples; ainda não foi
+integrado um modelo treinado.
 
-API FastAPI para classificar mensagens de atendimento bancário e sinalizar
-possíveis situações de fraude ou engenharia social. A API usa JWT, persiste
-resultados com SQLModel e verifica o proprietário em consultas por ID. O
-classificador atual usa regras simples; ainda não há um modelo de machine
-learning treinado.
+A API e os controles de segurança já estão implementados. A EDA do BANKING77
+continua inicial; os itens pendentes estão descritos na seção [Dados e EDA](#dados-e-eda).
+A revisão do material do integrante B está em
+[alinhamento-integrante-B.md](alinhamento-integrante-B.md).
 
-## Estado da entrega
-
-Os controles de segurança da API, os testes e o scan passivo do OWASP ZAP estão
-implementados. O notebook do BANKING77 registra uma EDA inicial; a etapa
-avançada descrita abaixo continua pendente.
-
-## Executar localmente
+## Como executar
 
 Requer Python 3.12 ou mais recente.
 
@@ -27,41 +24,41 @@ pip install -r requirements-dev.txt
 cp .env.example .env
 ```
 
-Gere uma `SECRET_KEY` exclusiva antes de iniciar a API:
+Gere uma chave para `SECRET_KEY`:
 
 ```bash
 python -c "import secrets; print(secrets.token_urlsafe(64))"
 ```
 
-Edite `.env`, substitua a chave de exemplo e confira `CORS_ORIGINS`. Crie as
-tabelas e o usuário local definidos nessa configuração:
+Edite `.env`, troque a chave de exemplo e confira as origens em `CORS_ORIGINS`.
+Depois, crie as tabelas e o usuário local:
 
 ```bash
 python -m scripts.seed
 ```
 
-Inicie um worker local:
+Inicie a API com um worker:
 
 ```bash
 uvicorn app.main:app --host 127.0.0.1 --port 8000 --workers 1 --no-proxy-headers --no-server-header
 ```
 
-Em `ENVIRONMENT=development`, a documentação interativa fica em
+Em desenvolvimento, a documentação interativa fica em
 <http://127.0.0.1:8000/docs>. Em produção, a documentação e o OpenAPI ficam
-desabilitados. O exemplo de usuário e senha em `.env.example` serve apenas para
-desenvolvimento; altere-os antes de criar o usuário.
+desativados. As credenciais de `.env.example` são apenas para desenvolvimento;
+troque-as antes de criar o usuário.
 
 ## Rotas
 
-| Método e rota | Acesso | Descrição |
+| Rota | Acesso | Uso |
 | --- | --- | --- |
-| `GET /health` | Público | Estado da API e do banco. |
-| `POST /auth/token` | Formulário de usuário e senha | Emite um JWT. |
-| `GET /auth/me` | JWT obrigatório | Retorna o usuário do token atual. |
-| `POST /predict` | JWT obrigatório | Classifica e registra uma mensagem. Retorna o ID e o header `Location`. |
-| `GET /predictions/{id}` | JWT obrigatório | Retorna uma predição somente ao seu proprietário. |
+| `GET /health` | Público | Verificar a API e o banco. |
+| `POST /auth/token` | Usuário e senha | Obter um JWT. |
+| `GET /auth/me` | JWT | Consultar o usuário autenticado. |
+| `POST /predict` | JWT | Classificar e registrar uma mensagem. A resposta traz o ID e o header `Location`. |
+| `GET /predictions/{id}` | JWT | Consultar uma predição própria. |
 
-Login local (valores padrão do `.env.example`, em um banco recém-criado):
+Com os valores padrão de `.env.example`, faça login em um banco recém-criado:
 
 ```bash
 curl -X POST http://127.0.0.1:8000/auth/token \
@@ -70,8 +67,7 @@ curl -X POST http://127.0.0.1:8000/auth/token \
 ```
 
 Se alterou `SEED_USERNAME` ou `SEED_PASSWORD` no `.env`, use esses valores.
-
-Use o `access_token` da resposta para classificar uma mensagem:
+Passe o token recebido no header `Authorization` das outras rotas. Por exemplo:
 
 ```bash
 curl -X POST http://127.0.0.1:8000/predict \
@@ -80,77 +76,72 @@ curl -X POST http://127.0.0.1:8000/predict \
   -d '{"message":"Meu cartão foi bloqueado, como desbloqueio?","channel":"chat"}'
 ```
 
-O retorno inclui `id`. Para consultar a predição salva, chame
-`GET /predictions/<id>` com o mesmo token; outro usuário recebe `404`.
+A resposta de `/predict` inclui o ID da predição. Consulte-o com
+`GET /predictions/<id>` usando o mesmo token; outro usuário recebe `404`.
 
-## Controles de segurança
+## Segurança
 
-- Todos os modelos de entrada da API rejeitam campos extras (`extra="forbid"`).
-- Persistência e consultas usam SQLModel; a rota por ID aplica o filtro de
-  proprietário na própria consulta.
-- Middleware define HSTS, X-Frame-Options, X-Content-Type-Options e CSP. HSTS
-  só é efetivo sob HTTPS; configure TLS e o redirecionamento no proxy de
-  produção.
-- CORS usa a allowlist exata definida em `CORS_ORIGINS`; não use `*`.
-- `/auth/token` limita por padrão **5 tentativas por IP em 300 segundos** e
-  devolve `429` com `Retry-After` ao esgotar o limite.
-- O limitador em memória suporta um worker. Para várias réplicas, substitua-o
-  por um contador compartilhado; os detalhes e a justificativa estão em
-  [docs/security-controls.md](docs/security-controls.md).
-- O texto das mensagens não é salvo no log de predições; é armazenado somente
-  seu hash e o resultado da classificação.
+Os bodies de entrada rejeitam campos que não fazem parte do modelo. As consultas
+e os modelos persistidos usam SQLModel; a consulta por ID também verifica o
+proprietário no banco. A API envia HSTS, X-Frame-Options,
+X-Content-Type-Options e Content-Security-Policy. HSTS só funciona sobre HTTPS,
+portanto a implantação deve configurar TLS e redirecionamento no proxy.
 
-## Testes e relatório ZAP
+CORS permite somente as origens configuradas em `CORS_ORIGINS`. O login aceita,
+por padrão, cinco tentativas por endereço IP em 300 segundos; depois responde
+`429` com `Retry-After`. O contador fica em memória e requer um worker. Para usar
+vários processos ou réplicas, é preciso migrá-lo para um contador compartilhado.
+Os detalhes e a justificativa estão em
+[docs/security-controls.md](docs/security-controls.md).
 
-Execute a suite com:
+As predições guardam o hash da mensagem, não o texto enviado.
+
+## Testes e ZAP
+
+Para executar os testes:
 
 ```bash
 pytest tests/
 ```
 
-Evidências e análise do scan passivo do ZAP:
+Na última execução registrada, os 37 testes passaram. O scan passivo final do
+OWASP ZAP não encontrou alertas High, Medium ou Low; registrou cinco alertas
+informativos. Os relatórios e a análise dos findings estão aqui:
 
-- [Relatório HTML final](reports/security/zap-final/report.html)
-- [Relatório JSON final](reports/security/zap-final/report.json)
-- [Findings, severidades e correções](docs/zap-findings.md)
-- [Execução e cobertura do scan](reports/security/zap-final/execution.json)
-
-O scan final registrou zero findings High, Medium ou Low; restaram alertas
-informativos. O relatório documenta o escopo e as limitações da análise.
+- [Relatório ZAP em HTML](reports/security/zap-final/report.html)
+- [Relatório ZAP em JSON](reports/security/zap-final/report.json)
+- [Análise dos findings](docs/zap-findings.md)
+- [Resumo da execução e cobertura](reports/security/zap-final/execution.json)
 
 ## Dados e EDA
 
-O dataset principal da classificação bancária é o [BANKING77](docs/dataset_banking77.md),
-com as mensagens em inglês distribuídas entre 77 categorias de intenção. Os
-arquivos originais e processados ficam em `data/raw/banking77/` e
-`data/processed/banking77/`.
+O BANKING77 é o conjunto principal para as mensagens de atendimento bancário: as
+mensagens são em inglês e estão divididas em 77 categorias de intenção. A fonte,
+os arquivos e a limpeza estão descritos em [docs/dataset_banking77.md](docs/dataset_banking77.md).
 
-Reproduza a limpeza e a EDA inicial com:
+Para repetir a limpeza e a EDA inicial:
 
 ```bash
 python -m scripts.eda_banking77
 ```
 
-O notebook correspondente é
+O notebook fica em
 [notebooks/banking77/01_eda_banking77.ipynb](notebooks/banking77/01_eda_banking77.ipynb).
-Ele inclui checagens de qualidade, distribuição de categorias, comprimentos de
-mensagens e hipóteses qualitativas. **Ainda faltam para a EDA avançada desta
-entrega:** heatmap de correlação, scatter plots, teste de hipótese com p-valor
-interpretado, outputs salvos nas células do notebook e relatório de EDA do
-BANKING77 com problema, dados, análise, insights, limitações e próximos passos.
-Os gráficos atuais ficam em `reports/figures/`.
+Ele já verifica a qualidade dos dados e mostra a distribuição das categorias e
+o tamanho das mensagens. Para completar a EDA desta entrega, ainda faltam o
+heatmap de correlação, scatter plots e um teste de hipótese com p-valor
+interpretado. Também é preciso salvar as saídas do notebook e entregar um
+relatório com problema, dados, análise, insights, limitações e próximos passos.
 
-O repositório também contém uma análise exploratória separada de um dataset de
-phishing e engenharia social em
+Há ainda uma EDA de outro conjunto, voltada a phishing e engenharia social, em
 [notebooks/security/01_dataset_understanding.ipynb](notebooks/security/01_dataset_understanding.ipynb),
-documentada em [docs/dataset_security.md](docs/dataset_security.md). Ela não
-substitui as análises pendentes do BANKING77.
+com notas em [docs/dataset_security.md](docs/dataset_security.md). Ela não
+substitui o trabalho que falta no BANKING77. O DFD e a análise CIA estão em
+[docs/dfd.md](docs/dfd.md) e [docs/cia.md](docs/cia.md).
 
-Diagramas e contexto adicional: [DFD](docs/dfd.md) e [análise CIA](docs/cia.md).
+## Uso de IA
 
-## Uso de ferramentas de IA
-
-O OpenAI ChatGPT foi utilizado em 26 e 27 de setembro de 2026 como apoio à
-revisão do repositório, implementação e documentação dos controles de segurança
-da API e dos testes. A análise e as conclusões devem ser verificadas pelos
-autores antes da entrega. Referência: OpenAI. (2026). *ChatGPT*. <https://chatgpt.com/>.
+O ChatGPT, da OpenAI, foi usado como apoio ao trabalho nos controles de segurança
+da API, nos testes e na documentação do scan e do README. A revisão não substitui
+a conferência dos resultados pelos integrantes. Referência: OpenAI. (2026).
+*ChatGPT*. <https://chatgpt.com/>.
