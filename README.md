@@ -8,8 +8,6 @@ integrado um modelo treinado.
 
 A API e os controles de segurança já estão implementados. A EDA do BANKING77
 continua inicial; os itens pendentes estão descritos na seção [Dados e EDA](#dados-e-eda).
-A revisão do material do integrante B está em
-[alinhamento-integrante-B.md](alinhamento-integrante-B.md).
 
 ## Como executar
 
