@@ -1,11 +1,17 @@
 # Planejamento técnico de T2 - Dados e IA
-Integrante A | TP3 | 14/10/2026 | Plano prospectivo, sem treinamento de classificador
+Integrante A | TP3 | Revisão: 17/10/2026 | Plano prospectivo, sem treinamento de classificador
 
 ## 1. Objetivo e decisão de classes
-Adotar como tarefa principal benigno versus ameaça, com ameaça positiva, mantendo os seis
+Propor como tarefa principal benigno versus ameaça, com ameaça positiva, mantendo os seis
 rótulos originais para diagnóstico. A justificativa e as contagens estão em
 `pergunta_classificacao.md`. Comparação multiclasse é secundária, não requisito para aceitar
 um bom resultado binário. Não renomear as classes como intenções bancárias nem misturar BANKING77.
+
+O alvo descreve conteúdo de segurança segundo os rótulos disponíveis. Um cliente legítimo
+pode citar uma ameaça, portanto a previsão não prova intenção maliciosa do remetente. O
+roteamento de intenções de atendimento constitui uma tarefa complementar, com taxonomia e
+avaliação próprias. Antes de consolidar o plano da dupla, registrar o alinhamento deste recorte
+com o integrante B e a orientação da disciplina; não há aprovação específica presumida.
 
 ## 2. Modelos candidatos e representação textual
 Referência mínima: DummyClassifier com estratégia de classe majoritária. Candidato principal:
@@ -54,8 +60,10 @@ rótulos do teste em função da previsão; problemas de anotação requerem rev
 ## 5. Validação externa e integração futura
 Confirmar direitos de uso/redistribuição do dataset, coletar mensagens bancárias em português
 com anonimização, consentimento/base de uso adequada e protocolo de anotação. Separar mensagens
-reais de sintéticas; estas não substituem avaliação representativa. Planejar dupla anotação e
-adjudicação de casos ambíguos. Congelar os exemplos externos antes da avaliação final.
+reais de sintéticas; estas não substituem avaliação representativa. Incluir relatos legítimos
+de golpes e mensagens que citam conteúdo ameaçador, evitando confundir o tema relatado com
+intenção maliciosa do cliente. Planejar dupla anotação e adjudicação de casos ambíguos.
+Congelar os exemplos externos antes da avaliação final.
 
 Antes de integrar ao agente, alinhar contrato de classes/scores, incerteza e revisão humana,
 comprimento máximo (API: 1.000 caracteres na base atual; dataset: até 3.693), idioma, custo e
@@ -63,16 +71,20 @@ latência. Não truncar silenciosamente. O modelo será suporte de triagem, sem 
 sensíveis por conta própria. Persistência, autenticação e controles da API são do integrante B.
 
 ## 6. Dependências do integrante B - campos obrigatórios do plano conjunto
+
 | Campo | Estado |
 |---|---|
+| Recorte da pergunta de classificação | PROPOSTO - registrar alinhamento entre segurança de conteúdo e intenções de atendimento |
 | Colega adversário | PENDENTE - nome e identificação a confirmar pela dupla |
 | URL/IP da API adversária | PENDENTE - não informado; não inferir a partir do GitHub |
 | Autorização, escopo e janela de pentest | PENDENTE - alinhar antes de qualquer teste adversarial |
-| Testes de segurança, workflow e proteção de merge | Integrante B - validar no TP3 integrado |
+| Testes de segurança, workflow e proteção de merge | Integrante B - validar no TP3 integrado; workflow de Dados no fork não substitui CI de segurança |
 | Auditoria final, findings e OpenAPI | Integrante B - atualizar evidências da versão integrada |
 
-Esses campos impedem considerar o plano conjunto completo. Nenhum scan, ataque ou alteração
-de infraestrutura foi realizado nesta etapa de Dados.
+Esses campos impedem considerar o plano conjunto completo. A execução histórica de 47 testes
+em 14/10/2026 está registrada em `resultado_validacao.md`; a revisão de 17/10 executou
+o notebook e aprovou 58 testes em Windows, com evidências próprias em `local_validation/`. Nenhum scan, ataque ou alteração de infraestrutura foi
+realizado nesta etapa de Dados.
 
 ## 7. Rastreabilidade e fontes
 Para cada experimento futuro: pergunta, hipótese, hash dos dados, manifesto, versões, seed,

@@ -1,3 +1,2 @@
+# Alias de compatibilidade: desenvolvimento inclui os testes e o notebook do TP3.
 -r requirements-dev.txt
-# Experimento de regressão do TP3; nenhum classificador treinado.
-scikit-learn==1.9.1

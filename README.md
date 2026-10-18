@@ -7,7 +7,7 @@ registro. Por enquanto, o classificador usa regras simples; ainda não foi
 integrado um modelo treinado.
 
 O repositório reúne a API com os controles OWASP auditados pelo OWASP ZAP e a
-análise exploratória dos dados, organizada por entrega (TP1 e TP2). Veja
+análise exploratória dos dados, organizada por entrega (TP1, TP2 e TP3). Veja
 [Dados e EDA](#dados-e-eda).
 
 ## Como executar
@@ -19,7 +19,7 @@ git clone https://github.com/franciscocostadev/fintech-guard.git
 cd fintech-guard
 python3 -m venv .venv
 source .venv/bin/activate
-pip install -r requirements-dev.txt
+python -m pip install -r requirements-dev.txt
 cp .env.example .env
 ```
 
@@ -100,14 +100,18 @@ As predições guardam o hash da mensagem, não o texto enviado.
 Para executar os testes:
 
 ```bash
-pytest tests/
+python -m pytest tests/ -v
 ```
 
-A suíte tem 43 testes: API, controles de segurança (acesso sem token, recurso
-de outro usuário, campo extra no body, headers, CORS e rate limiting) e os
-atributos usados na EDA. Na última execução registrada, todos passaram. A saída
-arquivada em [reports/security/pytest.txt](reports/security/pytest.txt) é da
-execução que acompanhou o scan, com os 37 testes de API existentes na época. O scan passivo final do
+A suíte cobre API e controles de segurança (autenticação, BOLA, entradas, headers,
+CORS e rate limiting), atributos da EDA e o experimento de regressão do TP3.
+As dependências de desenvolvimento incluem scikit-learn e os recursos para
+executar os notebooks. `requirements-tp3-dados.txt` é um alias desse mesmo conjunto.
+
+Os resultados e o ambiente de cada validação estão em
+[reports/TP3/resultado_validacao.md](reports/TP3/resultado_validacao.md).
+O registro histórico de [pytest do TP2](reports/security/pytest.txt) acompanha
+o scan e contém os 37 testes de API existentes naquela execução. O scan passivo final do
 OWASP ZAP não encontrou alertas High, Medium ou Low; registrou cinco alertas
 informativos. Os relatórios e a análise dos findings estão aqui:
 
@@ -133,11 +137,20 @@ execução:
 | TP1 | [BANKING77](notebooks/TP1/banking77/01_eda_banking77.ipynb) | Shape, tipos, ausentes, `describe(include="all")`, limpeza e três visualizações. |
 | TP1 | [Segurança](notebooks/TP1/security/01_dataset_understanding.ipynb) | Reconstrução do arquivo original, qualidade e limpeza inicial. |
 | TP2 | [Validação e EDA estatística](notebooks/TP2/security/01_validacao_e_eda_estatistica.ipynb) | Auditoria dos dados, sete atributos textuais, heatmaps de correlação (Pearson e Spearman), scatter plots, boxplots e teste de Mann-Whitney com p-valor interpretado. |
+| TP3 | [Regressão e transição](notebooks/TP3/security/01_regressao_e_transicao.ipynb) | Pré-processamento, regressão simples e múltipla, baseline, R²/RMSE, resíduos, Q-Q plot e limitações. |
 
 O relatório de EDA do TP2 (problema, dados, análise, insights principais,
 limitações e próximos passos) está em
 [Markdown](reports/TP2/relatorio_eda.md) e [PDF](reports/TP2/relatorio_eda.pdf).
-As figuras e evidências ficam em `reports/TP1/` e `reports/TP2/`.
+As figuras e evidências ficam em `reports/TP1/`, `reports/TP2/` e `reports/TP3/`.
+
+A [entrega de Dados do TP3](reports/TP3/README.md) reúne também a pergunta de
+classificação em [Markdown](reports/TP3/pergunta_classificacao.md) e
+[PDF](reports/TP3/pergunta_classificacao.pdf), o
+[planejamento T2](reports/TP3/planejamento_T2.md) e os registros de validação.
+O alvo planejado é o conteúdo de ameaça das mensagens; as intenções de serviço
+bancário do BANKING77 constituem uma tarefa complementar e separada.
+O classificador supervisionado ainda não foi treinado.
 
 Principais resultados do TP2:
 
@@ -148,7 +161,7 @@ Principais resultados do TP2:
   tem dispersão maior e concentra as mensagens mais longas (até 3.693 caracteres).
 - Caracteres e palavras são quase redundantes (Spearman 0,96).
 - Phishing e Pretexting tinham rótulos conflitantes para textos iguais; esses
-  casos foram removidos e indicam classes difíceis de separar no TP3.
+  casos foram removidos e indicam classes difíceis de separar no futuro classificador.
 
 Para executar os notebooks novamente, com as dependências de desenvolvimento
 instaladas:
@@ -157,6 +170,7 @@ instaladas:
 python -m scripts.execute_eda_notebook                 # TP1 — BANKING77
 python -m scripts.execute_security_notebook --tp TP1   # TP1 — segurança
 python -m scripts.execute_security_notebook            # TP2 — segurança
+python -m scripts.execute_tp3_notebook                 # TP3 — regressão
 ```
 
 O DFD e a análise CIA estão em [docs/dfd.md](docs/dfd.md) e

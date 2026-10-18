@@ -43,7 +43,7 @@ jobs:
         id: dependencies
         run: |
           set -o pipefail
-          python -m pip install -r requirements-tp3-dados.txt 2>&1 | tee reports/TP3/ci/install.log
+          python -m pip install -r requirements-dev.txt 2>&1 | tee reports/TP3/ci/install.log
           python -m pip check 2>&1 | tee reports/TP3/ci/pip-check.txt
           python -m pip freeze > reports/TP3/ci/environment.txt
       - name: Executar notebook completo
@@ -51,7 +51,7 @@ jobs:
         run: |
           set -o pipefail
           python -m scripts.execute_tp3_notebook 2>&1 | tee reports/TP3/ci/notebook.log
-      - name: Executar suite completa incluindo os quatro testes novos
+      - name: Executar suite completa de seguranca e dados
         if: ${{ !cancelled() && steps.dependencies.outcome == 'success' }}
         id: tests
         run: |
