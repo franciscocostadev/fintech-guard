@@ -16,9 +16,9 @@ artefato não comprova sucesso. É necessário conferir a execução verde, o JU
 
 O resultado aprovado em 14/10/2026 está em `resultado_validacao.md` e corresponde ao commit
 nele identificado. A revisão de 17/10 foi validada localmente em Windows (58 testes e notebook executado).
-Após publicar, ainda será necessário executar o workflow na revisão nova, identificar
-seu commit e preservar as saídas correspondentes. As evidências
-anteriores não devem ser apresentadas como resultado da revisão ainda não publicada.
+O commit `ead6000` executou o workflow em 18/10 e aprovou os 58 testes.
+As saídas correspondentes estão em `ci_20261018/`; ver [publicação](publicacao_github.md). As evidências
+anteriores permanecem identificadas separadamente dos resultados da revisão publicada.
 
 As notas de bloqueio local são históricas; outputs Linux não demonstram execução Windows.
 Este workflow não cobre pull requests ou a branch main e não configura bloqueio de merge.

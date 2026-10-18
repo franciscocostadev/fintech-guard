@@ -1,6 +1,6 @@
 # Estado de preparação do TP3
 
-Atualização: 17/10/2026.
+Atualização: 18/10/2026.
 
 ## Evidência disponível
 
@@ -20,6 +20,6 @@ O documento de classificação distingue ameaça no conteúdo de intenção do c
 o recorte de segurança proposto para T2. O plano conjunto ainda exige alinhamento desse
 recorte, identificação do adversário e URL, além das evidências de API e segurança.
 
-Nenhuma publicação desta revisão foi realizada nesta etapa. A integração no GitHub e a
-nova execução remota são os próximos passos. CI de segurança, proteção de merge, auditoria
+A revisão foi publicada no fork e aprovada no Actions em 18/10, com 58 testes.
+A abertura do PR no upstream depende da conta do usuário; ver [publicação](publicacao_github.md). CI de segurança, proteção de merge, auditoria
 final e disponibilidade da API adversária continuam sob responsabilidade do integrante B.

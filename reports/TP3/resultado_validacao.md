@@ -83,6 +83,8 @@ Registros: [execução](local_validation/execution.json), [ambiente](local_valid
 logs são substituídos por marcadores; os resultados e contagens são preservados.
 
 As evidências históricas em `ci/` continuam vinculadas ao commit de 14/10/2026. A revisão
-atual ainda não possui commit nem execução remota própria. O recorte da classificação
+foi publicada no commit `ead6000` e aprovada no Actions de 18/10, com 58 testes.
+Os registros atuais estão em [ci_20261018/](ci_20261018/) e [publicacao_github.md](publicacao_github.md).
+O recorte da classificação
 continua proposto para alinhamento da dupla; CI de segurança, adversário/URL e prontidão
 da API permanecem no plano conjunto sob responsabilidade do integrante B.

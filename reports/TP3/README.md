@@ -44,7 +44,8 @@ O commit e o resultado estão em [resultado_validacao.md](resultado_validacao.md
 A revisão local de **17/10/2026** executou o notebook e aprovou **58 testes** em um novo
 ambiente Windows instalado com `requirements-dev.txt`. Os registros próprios estão em
 `local_validation/`; os arquivos de `ci/` preservam a execução original em Linux.
-A revisão local ainda não foi publicada nem executada novamente no GitHub Actions.
+A revisão foi publicada no fork e aprovada no [GitHub Actions de 18/10/2026](https://github.com/Victorbicalhoa/fintech-guard/actions/runs/39137515437),
+também com 58 testes. Consulte [publicação e revisão do colega](publicacao_github.md).
 
 ## Recorte e passagem ao integrante B
 

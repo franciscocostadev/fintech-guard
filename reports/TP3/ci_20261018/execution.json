@@ -1,0 +1,28 @@
+{
+  "date": "2026-10-18",
+  "repository": "Victorbicalhoa/fintech-guard",
+  "branch": "feat/tp3-dados",
+  "tested_commit": "ead6000d643d6c25236d291174fd99cc52f79536",
+  "run_id": 39137515437,
+  "run_url": "https://github.com/Victorbicalhoa/fintech-guard/actions/runs/39137515437",
+  "job_id": 117704945822,
+  "conclusion": "success",
+  "tests_passed": 58,
+  "artifact_id": 12139834155,
+  "artifact_sha256": "9ed8620db54bb46195aa8d8373bcdddb9f1fa90cc02483e01f5a4ef81c8edd36",
+  "notebook_code_identical": true,
+  "metrics_match_local": true,
+  "evidence_files": [
+    "commit.txt",
+    "environment.txt",
+    "install.log",
+    "notebook.log",
+    "pip-check.txt",
+    "pytest.log",
+    "pytest.xml",
+    "python.txt",
+    "run-url.txt",
+    "validation.json"
+  ],
+  "pr_status": "Abertura pendente: integração sem permissão no upstream"
+}
