@@ -5,12 +5,17 @@ from fastapi import APIRouter, Depends, HTTPException, Path, Response, status
 from sqlmodel import select
 
 from app.api.deps import CurrentUser, DbSession
+from app.api.docs import AUTH_ERRORS, VALIDATION_ERROR
 from app.models.audit import PredictionLog
+from app.schemas.common import ErrorResponse
 from app.schemas.predict import PredictionPublic, PredictRequest, PredictResponse
 from app.services.predictor import IntentPredictor, get_predictor, hash_message
 
 logger = logging.getLogger(__name__)
 router = APIRouter(tags=["predict"])
+
+# maior INTEGER do SQLite; acima disso o driver estoura OverflowError (500)
+MAX_PREDICTION_ID = 2**63 - 1
 
 
 @router.post(
@@ -18,7 +23,15 @@ router = APIRouter(tags=["predict"])
     response_model=PredictResponse,
     status_code=status.HTTP_200_OK,
     summary="Classificar mensagem",
-    responses={401: {"description": "Token ausente, inválido ou expirado."}},
+    description=(
+        "Classifica a intenção da mensagem e o risco de fraude ou engenharia "
+        "social, e registra a predição em nome do usuário do token.\n\n"
+        "Somente o hash SHA-256 da mensagem é guardado. O body aceita apenas "
+        "`message` e `channel`; qualquer outro campo gera **422**. O header "
+        "`Location` aponta para `GET /predictions/{id}`."
+    ),
+    response_description="Predição registrada.",
+    responses={**AUTH_ERRORS, **VALIDATION_ERROR},
 )
 async def predict(
     payload: PredictRequest,
@@ -49,11 +62,23 @@ async def predict(
     "/predictions/{prediction_id}",
     response_model=PredictionPublic,
     summary="Consultar uma predição própria",
-    responses={401: {"description": "Token obrigatório."},
-               404: {"description": "Predição inexistente ou de outro usuário."}},
+    description=(
+        "Retorna uma predição do usuário autenticado. A consulta filtra por ID "
+        "**e** proprietário; predições de outro usuário respondem o mesmo "
+        "**404** de um ID inexistente, inclusive para o papel `admin`."
+    ),
+    response_description="Predição do usuário autenticado.",
+    responses={
+        **AUTH_ERRORS,
+        404: {"model": ErrorResponse, "description": "Predição inexistente ou de outro usuário.",
+              "content": {"application/json": {"example": {"detail": "Predição não encontrada."}}}},
+        **VALIDATION_ERROR,
+    },
 )
 async def read_prediction(
-    prediction_id: Annotated[int, Path(gt=0)],
+    prediction_id: Annotated[int, Path(
+        gt=0, le=MAX_PREDICTION_ID, description="ID retornado por `POST /predict`.",
+    )],
     current_user: CurrentUser,
     db: DbSession,
 ) -> PredictionPublic:

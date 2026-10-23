@@ -13,6 +13,7 @@ router = APIRouter(tags=["health"])
     "/health",
     response_model=HealthResponse,
     summary="Status da API",
+    description="Rota pública. Verifica o banco com `SELECT 1` sem expor o motivo de falhas.",
 )
 async def health() -> HealthResponse:
     settings = get_settings()
