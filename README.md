@@ -30,7 +30,7 @@ python -c "import secrets; print(secrets.token_urlsafe(64))"
 ```
 
 Edite `.env`, troque a chave de exemplo e confira as origens em `CORS_ORIGINS`.
-Depois, crie as tabelas e o usuário local:
+Depois, crie as tabelas, as duas contas de teste e as predições sintéticas:
 
 ```bash
 python -m scripts.seed
@@ -57,6 +57,14 @@ troque-as antes de criar o usuário.
 | `POST /predict` | JWT | Classificar e registrar uma mensagem. A resposta traz o ID e o header `Location`. |
 | `GET /predictions/{id}` | JWT | Consultar uma predição própria. |
 
+O seed cria duas contas sintéticas com papéis diferentes, cada uma com duas
+predições, para testar o isolamento entre usuários (BOLA):
+
+| Usuário | Papel | Predições |
+| --- | --- | --- |
+| `analista` | analyst | 1 e 2 |
+| `supervisor` | admin | 3 e 4 |
+
 Com os valores padrão de `.env.example`, faça login em um banco recém-criado:
 
 ```bash
@@ -65,7 +73,8 @@ curl -X POST http://127.0.0.1:8000/auth/token \
   --data-urlencode 'password=Troque@Esta#Senha123'
 ```
 
-Se alterou `SEED_USERNAME` ou `SEED_PASSWORD` no `.env`, use esses valores.
+Se alterou `SEED_USERNAME`, `SEED_PASSWORD`, `SEED_ADMIN_USERNAME` ou
+`SEED_ADMIN_PASSWORD` no `.env`, use esses valores.
 Passe o token recebido no header `Authorization` das outras rotas. Por exemplo:
 
 ```bash
@@ -95,7 +104,7 @@ Os detalhes e a justificativa estão em
 
 As predições guardam o hash da mensagem, não o texto enviado.
 
-## Testes e ZAP
+## Testes, CI e auditoria
 
 Para executar os testes:
 
@@ -103,22 +112,32 @@ Para executar os testes:
 python -m pytest tests/ -v
 ```
 
-A suíte cobre API e controles de segurança (autenticação, BOLA, entradas, headers,
-CORS e rate limiting), atributos da EDA e o experimento de regressão do TP3.
+A suíte cobre API e controles de segurança, atributos da EDA e o experimento de
+regressão do TP3. Os testes de segurança verificam autenticação (sem token, JWT
+adulterado, expirado ou `alg: none`, usuário inativo), autorização BOLA nos dois
+sentidos, validação de entradas, rate limiting, headers e CORS. A execução da
+auditoria final está em
+[reports/security/tp3/pytest.txt](reports/security/tp3/pytest.txt).
 As dependências de desenvolvimento incluem scikit-learn e os recursos para
 executar os notebooks. `requirements-tp3-dados.txt` é um alias desse mesmo conjunto.
-
-Os resultados e o ambiente de cada validação estão em
+Os resultados e o ambiente de cada validação de Dados estão em
 [reports/TP3/resultado_validacao.md](reports/TP3/resultado_validacao.md).
-O registro histórico de [pytest do TP2](reports/security/pytest.txt) acompanha
-o scan e contém os 37 testes de API existentes naquela execução. O scan passivo final do
-OWASP ZAP não encontrou alertas High, Medium ou Low; registrou cinco alertas
-informativos. Os relatórios e a análise dos findings estão aqui:
 
-- [Relatório ZAP em HTML](reports/security/zap-final/report.html)
-- [Relatório ZAP em JSON](reports/security/zap-final/report.json)
-- [Análise dos findings](docs/zap-findings.md)
-- [Resumo da execução e cobertura](reports/security/zap-final/execution.json)
+O GitHub Actions executa a suíte a cada push e pull request
+([security-tests.yml](.github/workflows/security-tests.yml)). Para o workflow
+impedir o merge, a branch `main` precisa exigir o check `security-tests`; veja
+a seção 5 da auditoria.
+
+A [auditoria final do TP3](docs/auditoria-final-tp3.md) reúne o checklist de
+segurança, o re-scan do OWASP ZAP (nenhum alerta High, Medium ou Low; cinco
+informativos), a correção do finding manual AUD-01, a verificação de prontidão
+e o escopo do pentest. Os relatórios ZAP do TP2 e o
+[pytest do TP2](reports/security/pytest.txt) continuam como registro histórico
+em [docs/zap-findings.md](docs/zap-findings.md).
+
+- [Relatório ZAP final em HTML](reports/security/zap-tp3/report.html)
+- [Relatório ZAP final em JSON](reports/security/zap-tp3/report.json)
+- [Resumo da execução e cobertura](reports/security/zap-tp3/execution.json)
 
 ## Dados e EDA
 

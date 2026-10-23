@@ -7,7 +7,10 @@ Todos os bodies recebidos pela API herdam `InputModel`, com
 (formulário OAuth2). Campos desconhecidos geram **422**, sem refletir seus valores
 na resposta. O formulário declara os campos OAuth2 utilizados pelo Swagger;
 `scope` enviado pelo cliente não concede permissões. Senhas acima de 72 bytes
-são recusadas para evitar truncamento do bcrypt. `Settings` descreve o ambiente,
+são recusadas para evitar truncamento do bcrypt. `channel` aceita apenas `chat`,
+`whatsapp`, `email` e `telefone`. O ID de `GET /predictions/{prediction_id}`
+vai de 1 a 2⁶³−1: acima disso o SQLite estourava `OverflowError` e a API
+respondia 500 (finding AUD-01 em [auditoria-final-tp3.md](auditoria-final-tp3.md)). `Settings` descreve o ambiente,
 não requests HTTP; seus campos extras do `.env` continuam ignorados.
 
 `User` e `PredictionLog` são tabelas SQLModel. Leitura usa

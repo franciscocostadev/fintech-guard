@@ -27,6 +27,9 @@ class Settings(BaseSettings):
 
     seed_username: str = "analista"
     seed_password: str = "Troque@Esta#Senha123"
+    # segunda conta, com outro papel, para testar BOLA no pentest
+    seed_admin_username: str = "supervisor"
+    seed_admin_password: str = "Troque@Outra#Senha456"
 
     @property
     def is_production(self) -> bool:
