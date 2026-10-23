@@ -1,0 +1,2 @@
+# Alias de compatibilidade: desenvolvimento inclui os testes e o notebook do TP3.
+-r requirements-dev.txt

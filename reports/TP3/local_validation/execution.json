@@ -1,0 +1,13 @@
+{
+  "date": "2026-10-17",
+  "environment": "Windows; novo ambiente virtual isolado",
+  "python": "3.13.15",
+  "requirements": "requirements-dev.txt",
+  "installation": "uv pip install --offline -r requirements-dev.txt (cache local)",
+  "dependency_check": "uv pip check: 83 pacotes compatíveis",
+  "revision": "Cópia de trabalho local; alterações ainda sem commit",
+  "logs": "Caminhos absolutos do ambiente substituídos por marcadores",
+  "tests_passed": 58,
+  "temporary_directory": "Diretório novo isolado para TEMP/TMP e cache de visualização",
+  "junit_privacy": "Hostname substituído por local-windows; resultados e tempos preservados"
+}

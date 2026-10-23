@@ -1,0 +1,8 @@
+{
+  "status": "evidencias_automaticas_validadas_revisao_humana_pendente",
+  "code_cells": 7,
+  "embedded_images": 3,
+  "test_cases": 47,
+  "tp3_test_cases": 4,
+  "dataset_sha256": "b416c4362ef0447340770b7c73a57d5705ecc8bbeaf2efc1c2a0de632707d5c1"
+}

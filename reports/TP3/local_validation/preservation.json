@@ -1,0 +1,13 @@
+{
+  "files_checked": 78,
+  "changed": [],
+  "scope": [
+    "app",
+    "data",
+    "notebooks/TP1",
+    "notebooks/TP2",
+    "reports/TP1",
+    "reports/TP2",
+    "reports/security"
+  ]
+}

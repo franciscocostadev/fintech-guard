@@ -1,0 +1,85 @@
+============================= test session starts ==============================
+platform linux -- Python 3.13.16, pytest-8.3.4, pluggy-1.6.0 -- /opt/hostedtoolcache/Python/3.13.16/x64/bin/python
+rootdir: /home/runner/work/fintech-guard/fintech-guard
+configfile: pytest.ini
+plugins: platformdirs-4.13.0, anyio-3.7.1
+collecting ... collected 47 items
+
+tests/test_api.py::test_health_e_publico PASSED                          [  2%]
+tests/test_api.py::test_home_exibe_interface_simples PASSED              [  4%]
+tests/test_api.py::test_health_traz_cabecalhos_de_seguranca PASSED       [  6%]
+tests/test_api.py::test_token_com_credenciais_validas PASSED             [  8%]
+tests/test_api.py::test_token_com_senha_errada PASSED                    [ 10%]
+tests/test_api.py::test_predict_sem_token PASSED                         [ 12%]
+tests/test_api.py::test_predict_com_token_invalido PASSED                [ 14%]
+tests/test_api.py::test_predict_autenticado_retorna_intencao_por_regras PASSED [ 17%]
+tests/test_api.py::test_predict_rejeita_mensagem_vazia PASSED            [ 19%]
+tests/test_api.py::test_erro_de_validacao_nao_devolve_o_input PASSED     [ 21%]
+tests/test_api.py::test_auth_me PASSED                                   [ 23%]
+tests/test_api.py::test_predict_sem_token_responde_em_portugues PASSED   [ 25%]
+tests/test_security.py::test_recurso_por_id_exige_token PASSED           [ 27%]
+tests/test_security.py::test_ownership_bloqueia_outro_usuario_inclusive_admin PASSED [ 29%]
+tests/test_security.py::test_predict_rejeita_extra_sem_persistir PASSED  [ 31%]
+tests/test_security.py::test_login_rejeita_campo_extra_no_form PASSED    [ 34%]
+tests/test_security.py::test_login_suporta_form_oauth2_sem_escalar_permissoes PASSED [ 36%]
+tests/test_security.py::test_sql_injection_no_username_nao_autentica PASSED [ 38%]
+tests/test_security.py::test_login_rejeita_senha_bcrypt_truncada_em_bytes PASSED [ 40%]
+tests/test_security.py::test_rate_limit_sexta_tentativa_e_ip_forjado PASSED [ 42%]
+tests/test_security.py::test_rate_limit_conta_sucessos_e_bodies_invalidos PASSED [ 44%]
+tests/test_security.py::test_rate_limit_janela_ip_e_concorrencia PASSED  [ 46%]
+tests/test_security.py::test_rate_limit_memoria_limitada_nao_descarta_buckets_ativos PASSED [ 48%]
+tests/test_security.py::test_headers_em_sucesso_e_erros[/health-200] PASSED [ 51%]
+tests/test_security.py::test_headers_em_sucesso_e_erros[/missing-404] PASSED [ 53%]
+tests/test_security.py::test_headers_em_sucesso_e_erros[/auth/me-401] PASSED [ 55%]
+tests/test_security.py::test_headers_em_erro_interno PASSED              [ 57%]
+tests/test_security.py::test_html_tem_nonce_compativel_com_csp[/] PASSED [ 59%]
+tests/test_security.py::test_html_tem_nonce_compativel_com_csp[/docs] PASSED [ 61%]
+tests/test_security.py::test_cors_allowlist_e_preflight PASSED           [ 63%]
+tests/test_security.py::test_config_recusa_cors_sem_origem_explicita[*] PASSED [ 65%]
+tests/test_security.py::test_config_recusa_cors_sem_origem_explicita[https://*.example.com] PASSED [ 68%]
+tests/test_security.py::test_config_recusa_cors_sem_origem_explicita[null] PASSED [ 70%]
+tests/test_security.py::test_config_recusa_cors_sem_origem_explicita[https://example.com/path] PASSED [ 72%]
+tests/test_security.py::test_config_recusa_cors_sem_origem_explicita[https://user:pass@example.com] PASSED [ 74%]
+tests/test_security.py::test_openapi_todos_os_bodies_rejeitam_extras PASSED [ 76%]
+tests/test_security.py::test_swagger_assets_fixados_com_integridade PASSED [ 78%]
+tests/test_security_features.py::SecurityFeaturesTests::test_empty_and_no_letters PASSED [ 80%]
+tests/test_security_features.py::SecurityFeaturesTests::test_link_detection_limits PASSED [ 82%]
+tests/test_security_features.py::SecurityFeaturesTests::test_links_excluded_from_words_but_not_characters PASSED [ 85%]
+tests/test_security_features.py::SecurityFeaturesTests::test_manual_reference PASSED [ 87%]
+tests/test_security_features.py::SecurityFeaturesTests::test_tokenization PASSED [ 89%]
+tests/test_security_features.py::SecurityFeaturesTests::test_unicode_and_invalid_inputs PASSED [ 91%]
+tests/test_tp3_regression.py::test_partition_disjoint_and_complete PASSED [ 93%]
+tests/test_tp3_regression.py::test_partition_reproducible PASSED         [ 95%]
+tests/test_tp3_regression.py::test_scaler_only_learns_training_values PASSED [ 97%]
+tests/test_tp3_regression.py::test_predictors_exclude_target_labels_and_constant_links PASSED [100%]
+
+=============================== warnings summary ===============================
+../../../../../opt/hostedtoolcache/Python/3.13.16/x64/lib/python3.13/site-packages/matplotlib/_fontconfig_pattern.py:64
+  /opt/hostedtoolcache/Python/3.13.16/x64/lib/python3.13/site-packages/matplotlib/_fontconfig_pattern.py:64: PyparsingDeprecationWarning: 'oneOf' deprecated - use 'one_of'
+    prop = Group((name + Suppress("=") + comma_separated(value)) | oneOf(_CONSTANTS))
+
+../../../../../opt/hostedtoolcache/Python/3.13.16/x64/lib/python3.13/site-packages/matplotlib/_fontconfig_pattern.py:85
+../../../../../opt/hostedtoolcache/Python/3.13.16/x64/lib/python3.13/site-packages/matplotlib/_fontconfig_pattern.py:85
+../../../../../opt/hostedtoolcache/Python/3.13.16/x64/lib/python3.13/site-packages/matplotlib/_fontconfig_pattern.py:85
+../../../../../opt/hostedtoolcache/Python/3.13.16/x64/lib/python3.13/site-packages/matplotlib/_fontconfig_pattern.py:85
+../../../../../opt/hostedtoolcache/Python/3.13.16/x64/lib/python3.13/site-packages/matplotlib/_fontconfig_pattern.py:85
+../../../../../opt/hostedtoolcache/Python/3.13.16/x64/lib/python3.13/site-packages/matplotlib/_fontconfig_pattern.py:85
+  /opt/hostedtoolcache/Python/3.13.16/x64/lib/python3.13/site-packages/matplotlib/_fontconfig_pattern.py:85: PyparsingDeprecationWarning: 'parseString' deprecated - use 'parse_string'
+    parse = parser.parseString(pattern)
+
+../../../../../opt/hostedtoolcache/Python/3.13.16/x64/lib/python3.13/site-packages/matplotlib/_fontconfig_pattern.py:89
+../../../../../opt/hostedtoolcache/Python/3.13.16/x64/lib/python3.13/site-packages/matplotlib/_fontconfig_pattern.py:89
+../../../../../opt/hostedtoolcache/Python/3.13.16/x64/lib/python3.13/site-packages/matplotlib/_fontconfig_pattern.py:89
+../../../../../opt/hostedtoolcache/Python/3.13.16/x64/lib/python3.13/site-packages/matplotlib/_fontconfig_pattern.py:89
+../../../../../opt/hostedtoolcache/Python/3.13.16/x64/lib/python3.13/site-packages/matplotlib/_fontconfig_pattern.py:89
+../../../../../opt/hostedtoolcache/Python/3.13.16/x64/lib/python3.13/site-packages/matplotlib/_fontconfig_pattern.py:89
+  /opt/hostedtoolcache/Python/3.13.16/x64/lib/python3.13/site-packages/matplotlib/_fontconfig_pattern.py:89: PyparsingDeprecationWarning: 'resetCache' deprecated - use 'reset_cache'
+    parser.resetCache()
+
+../../../../../opt/hostedtoolcache/Python/3.13.16/x64/lib/python3.13/site-packages/matplotlib/_mathtext.py:45
+  /opt/hostedtoolcache/Python/3.13.16/x64/lib/python3.13/site-packages/matplotlib/_mathtext.py:45: PyparsingDeprecationWarning: 'enablePackrat' deprecated - use 'enable_packrat'
+    ParserElement.enablePackrat()
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+- generated xml file: /home/runner/work/fintech-guard/fintech-guard/reports/TP3/ci/pytest.xml -
+======================= 47 passed, 14 warnings in 7.23s ========================

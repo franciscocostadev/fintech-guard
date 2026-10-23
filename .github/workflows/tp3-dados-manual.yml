@@ -1,0 +1,76 @@
+name: TP3 - Validacao manual de Dados e IA
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [feat/tp3-dados]
+
+permissions:
+  contents: read
+
+jobs:
+  dados:
+    # Este workflow é exclusivo do fork; não executa no repositório do colega.
+    if: github.repository == 'Victorbicalhoa/fintech-guard'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    env:
+      MPLBACKEND: Agg
+      MPLCONFIGDIR: /tmp/tp3-matplotlib
+      IPYTHONDIR: /tmp/tp3-ipython
+      PYTHONUTF8: '1'
+      OMP_NUM_THREADS: '1'
+      OPENBLAS_NUM_THREADS: '1'
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - name: Obter a revisao selecionada
+        uses: actions/checkout@v6
+        with:
+          persist-credentials: false
+      - name: Preparar Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.13'
+      - name: Registrar ambiente e origem
+        run: |
+          mkdir -p reports/TP3/ci
+          python --version > reports/TP3/ci/python.txt
+          git rev-parse HEAD > reports/TP3/ci/commit.txt
+          printf '%s\n' "$GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID" > reports/TP3/ci/run-url.txt
+      - name: Instalar dependencias
+        id: dependencies
+        run: |
+          set -o pipefail
+          python -m pip install -r requirements-dev.txt 2>&1 | tee reports/TP3/ci/install.log
+          python -m pip check 2>&1 | tee reports/TP3/ci/pip-check.txt
+          python -m pip freeze > reports/TP3/ci/environment.txt
+      - name: Executar notebook completo
+        id: notebook
+        run: |
+          set -o pipefail
+          python -m scripts.execute_tp3_notebook 2>&1 | tee reports/TP3/ci/notebook.log
+      - name: Executar suite completa de seguranca e dados
+        if: ${{ !cancelled() && steps.dependencies.outcome == 'success' }}
+        id: tests
+        run: |
+          set -o pipefail
+          python -m pytest tests/ -v -p no:cacheprovider --junitxml=reports/TP3/ci/pytest.xml 2>&1 | tee reports/TP3/ci/pytest.log
+      - name: Conferir evidencias e preservacao do historico
+        if: ${{ !cancelled() && steps.notebook.outcome == 'success' && steps.tests.outcome == 'success' }}
+        run: |
+          python -m scripts.verify_tp3_evidence
+          git diff --exit-code -- app data notebooks/TP1 notebooks/TP2 reports/TP1 reports/TP2
+      - name: Disponibilizar resultados e diagnostico
+        if: ${{ always() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: tp3-dados-${{ github.run_id }}-${{ github.run_attempt }}
+          retention-days: 14
+          if-no-files-found: error
+          path: |
+            notebooks/TP3/security/01_regressao_e_transicao.ipynb
+            reports/TP3/regression/
+            reports/TP3/figures/
+            reports/TP3/ci/

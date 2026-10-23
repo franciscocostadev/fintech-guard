@@ -1,0 +1,6 @@
+modelo,atributo,coef_por_desvio_padrao
+linear_simples,n_words,406.75053713426087
+linear_multipla,n_words,408.65233403482773
+linear_multipla,mean_word_length,11.385069408052832
+linear_multipla,uppercase_ratio,-2.725138464060799
+linear_multipla,n_exclamations,-0.9479382522059634

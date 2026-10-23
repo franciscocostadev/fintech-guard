@@ -1,0 +1,17 @@
+{
+  "status": "historico_pre_execucao_remota",
+  "n": 603,
+  "classes": {
+    "NOT-Malicious General Class": 171,
+    "Phishing": 110,
+    "Scareware": 100,
+    "Baiting": 80,
+    "Malware": 77,
+    "Pretexting": 65
+  },
+  "dataset_sha256": "b416c4362ef0447340770b7c73a57d5705ecc8bbeaf2efc1c2a0de632707d5c1",
+  "code_cells": 7,
+  "executed_cells": 0,
+  "base_commit": "649f5c43f91f4b2fa0bbdadfb357061175760377",
+  "resultado_atual": "resultado_validacao.md"
+}

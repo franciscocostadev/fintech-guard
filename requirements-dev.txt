@@ -13,3 +13,6 @@ seaborn==0.13.2
 
 # Teste de hipótese exploratório do TP2
 scipy==1.18.1
+
+# Regressão e testes de Dados do TP3
+scikit-learn==1.9.1

@@ -1,0 +1,28 @@
+{
+  "seed": 42,
+  "test_size": 0.2,
+  "train_n": 482,
+  "evaluation_n": 121,
+  "dataset_sha256": "b416c4362ef0447340770b7c73a57d5705ecc8bbeaf2efc1c2a0de632707d5c1",
+  "target": "n_chars",
+  "simple": [
+    "n_words"
+  ],
+  "multiple": [
+    "n_words",
+    "mean_word_length",
+    "uppercase_ratio",
+    "n_exclamations"
+  ],
+  "versions": {
+    "python": "3.13.15",
+    "sklearn": "1.9.1",
+    "pandas": "2.2.3",
+    "numpy": "2.5.4",
+    "scipy": "1.18.1"
+  },
+  "interpretation_scope": "Avaliação interna pedagógica; base já explorada no TP1/TP2. Não é teste externo de classificação.",
+  "max_chars": 3693,
+  "evaluation_max_chars": 2960,
+  "train_max_chars": 3693
+}
