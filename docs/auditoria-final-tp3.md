@@ -84,9 +84,9 @@ classificador; aceitar qualquer texto só ampliava a superfície de entrada.
 
 ## 3. Checklist de segurança
 
-O status **resolvido** indica controle implementado e verificado por teste ou
-scan. **Aceito** indica um limite conhecido, com justificativa. **Pendente**
-depende de uma ação fora do código.
+O status **resolvido** indica controle implementado e verificado por teste,
+scan ou configuração do repositório. **Aceito** indica um limite conhecido, com
+justificativa.
 
 | # | Controle | Status | Verificação |
 | --- | --- | --- | --- |
@@ -105,7 +105,7 @@ depende de uma ação fora do código.
 | 13 | Swagger com versão fixa e SRI; documentação desligada em produção | Resolvido | Re-scan sem 90003 e 10017. |
 | 14 | Segredos fora do código | Resolvido | Configuração via ambiente; a `SECRET_KEY` de exemplo impede o startup. |
 | 15 | Testes de segurança no CI | Resolvido | `security-tests.yml` a cada push e pull request. |
-| 16 | Merge bloqueado quando o CI falha | **Pendente** | Exige regra de proteção da branch `main` (seção 5). |
+| 16 | Merge bloqueado quando o CI falha | Resolvido | Ruleset `proteger-main` exige pull request e o check `security-tests` (seção 5). |
 | 17 | HSTS efetivo | Aceito | O header é enviado, mas só tem efeito sob HTTPS, que cabe ao proxy da implantação. |
 | 18 | Contador de rate limiting em memória | Aceito | Vale para um worker; várias réplicas exigiriam um contador compartilhado. |
 | 19 | Rate limiting apenas no login | Aceito | As demais rotas exigem JWT; proteção contra volume fica no gateway. |
@@ -157,17 +157,28 @@ algum teste falhar, o job `security-tests` termina com falha. O workflow tem
 apenas permissão de leitura do repositório e não usa segredos: o `conftest.py`
 cria a chave e o banco temporário dos testes.
 
-Um workflow com falha, sozinho, **não impede o merge**. O bloqueio depende de
-uma regra de proteção da branch `main`, configurada por um administrador em
-**Settings → Branches**:
+Um workflow com falha, sozinho, **não impede o merge**. Por isso a branch `main`
+é protegida pelo ruleset `proteger-main`, ativo desde 23/10/2026, com a lista de
+bypass vazia: a regra vale também para o dono do repositório. Ele aplica quatro
+regras à branch padrão:
 
-1. *Require a pull request before merging*.
-2. *Require status checks to pass*, com o check `security-tests`. O check só
-   aparece na busca depois da primeira execução do workflow.
-3. *Do not allow bypassing the above settings*, para que a regra também valha
-   para administradores.
+| Regra | Efeito |
+| --- | --- |
+| Require a pull request before merging | Nenhum commit entra na `main` sem pull request. Zero aprovações, porque a dupla tem dois integrantes e cada um precisa conseguir integrar a própria parte. |
+| Require status checks to pass | O merge só é liberado com o check `security-tests` (GitHub Actions) aprovado. |
+| Block force pushes | O histórico da `main` não pode ser reescrito. |
+| Restrict deletions | A `main` não pode ser apagada. |
 
-Enquanto a regra não for criada, o item 16 do checklist permanece pendente.
+A configuração lida pela API pública do GitHub está em
+[ruleset-main.json](../reports/security/tp3/ruleset-main.json). O primeiro uso
+foi o próprio PR desta entrega (#4): o merge só foi liberado depois que os dois
+runs do `security-tests`, de push e de pull request, terminaram com sucesso.
+O run na `main` após o merge, no commit `653e851`, também passou. Até o pentest
+do TP4/TP5, qualquer mudança na API passa pelo mesmo caminho.
+
+Exigir zero aprovações tem um limite: o check impede regressões dos controles
+testados, mas não substitui a revisão humana. Se a dupla quiser essa garantia,
+basta subir *Required approvals* para 1.
 
 ## 6. Prontidão para o pentest
 
@@ -190,7 +201,7 @@ possa ser testado nos dois sentidos:
 | Autorização | `analista` lê 1 e 2 e recebe 404 em 3 e 4; `supervisor`, o inverso. |
 | Contas e dados de teste | Criados por `python -m scripts.seed`. |
 | Testes automatizados | 95 de 95 aprovados, 62 deles de segurança. |
-| CI | Workflow criado; proteção da branch pendente. |
+| CI | `security-tests` roda a cada push e pull request e é obrigatório para o merge na `main`. |
 | Findings Medium/High | Nenhum no re-scan; AUD-01 corrigido. |
 | Escopo, equipe adversária e URL | Pendente (seção 7). |
 
