@@ -1,0 +1,53 @@
+Usuário 'scan_owner' (analyst) criado.
+Usuário 'scan_admin' (admin) criado.
+Predições de 'scan_owner': [1, 2]
+Predições de 'scan_admin': [3, 4]
+Usuário 'scan_other' (analyst) criado.
+Usuário 'scan_admin' já existe.
+Predições de 'scan_other': [5, 6]
+Predições de 'scan_admin': [3, 4]
+INFO:     Started server process [99629]
+INFO:     Waiting for application startup.
+2026-10-23 19:21:36,501 INFO app.main - Fintech Guard API iniciada (env=development)
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://127.0.0.1:18000 (Press CTRL+C to quit)
+INFO:     127.0.0.1:38390 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:38400 - "GET / HTTP/1.1" 200 OK
+INFO:     127.0.0.1:38400 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:38400 - "GET /docs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:38400 - "GET /redoc HTTP/1.1" 307 Temporary Redirect
+INFO:     127.0.0.1:38400 - "GET /openapi.json HTTP/1.1" 200 OK
+INFO:     127.0.0.1:38400 - "GET /favicon.ico HTTP/1.1" 204 No Content
+INFO:     127.0.0.1:38400 - "GET /missing HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:38400 - "GET /auth/me HTTP/1.1" 401 Unauthorized
+INFO:     127.0.0.1:38400 - "POST /predict HTTP/1.1" 401 Unauthorized
+INFO:     127.0.0.1:38400 - "GET /predictions/1 HTTP/1.1" 401 Unauthorized
+2026-10-23 19:21:42,109 INFO app.api.routes.auth - Login autorizado: usuario=scan_owner
+INFO:     127.0.0.1:38400 - "POST /auth/token HTTP/1.1" 200 OK
+2026-10-23 19:21:42,310 INFO app.api.routes.auth - Login autorizado: usuario=scan_other
+INFO:     127.0.0.1:38400 - "POST /auth/token HTTP/1.1" 200 OK
+INFO:     127.0.0.1:38400 - "GET /auth/me HTTP/1.1" 200 OK
+2026-10-23 19:21:42,330 INFO app.api.routes.predict - Predição registrada: id=7 usuario=scan_owner
+INFO:     127.0.0.1:38400 - "POST /predict HTTP/1.1" 200 OK
+INFO:     127.0.0.1:38400 - "GET /predictions/7 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:38400 - "GET /predictions/7 HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:38400 - "GET /predictions/99999999 HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:38400 - "POST /predict HTTP/1.1" 422 Unprocessable Entity
+INFO:     127.0.0.1:38400 - "POST /predict HTTP/1.1" 422 Unprocessable Entity
+INFO:     127.0.0.1:38400 - "POST /predict HTTP/1.1" 422 Unprocessable Entity
+INFO:     127.0.0.1:38400 - "GET /predictions/9223372036854775808 HTTP/1.1" 422 Unprocessable Entity
+INFO:     127.0.0.1:38400 - "POST /auth/token HTTP/1.1" 422 Unprocessable Entity
+2026-10-23 19:21:42,589 WARNING app.api.routes.auth - Falha de autenticação
+INFO:     127.0.0.1:38400 - "POST /auth/token HTTP/1.1" 401 Unauthorized
+2026-10-23 19:21:42,789 WARNING app.api.routes.auth - Falha de autenticação
+INFO:     127.0.0.1:38400 - "POST /auth/token HTTP/1.1" 401 Unauthorized
+INFO:     127.0.0.1:38400 - "POST /auth/token HTTP/1.1" 429 Too Many Requests
+INFO:     127.0.0.1:38400 - "OPTIONS /predict HTTP/1.1" 200 OK
+INFO:     127.0.0.1:38400 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:38400 - "OPTIONS /predict HTTP/1.1" 400 Bad Request
+INFO:     127.0.0.1:38400 - "GET /health HTTP/1.1" 200 OK
+INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+2026-10-23 19:21:50,030 INFO app.main - Fintech Guard API encerrada
+INFO:     Application shutdown complete.
+INFO:     Finished server process [99629]

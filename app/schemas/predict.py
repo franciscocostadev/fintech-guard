@@ -12,17 +12,24 @@ class RiskLevel(str, Enum):
     HIGH = "high"
 
 
+class Channel(str, Enum):
+    CHAT = "chat"
+    WHATSAPP = "whatsapp"
+    EMAIL = "email"
+    TELEFONE = "telefone"
+
+
 class PredictRequest(InputModel):
     message: str = Field(
         min_length=1,
         max_length=1000,
-        description="Mensagem do cliente a ser classificada.",
+        description="Mensagem do cliente a ser classificada (1 a 1000 caracteres).",
         examples=["Meu cartão foi bloqueado, como desbloqueio?"],
     )
-    channel: str = Field(
-        default="chat",
-        max_length=32,
-        description="Canal de origem: chat, whatsapp, email, telefone.",
+    # allowlist: texto livre aqui seria mais uma entrada sem uso nem validação
+    channel: Channel = Field(
+        default=Channel.CHAT,
+        description="Canal de origem do atendimento.",
     )
 
     @field_validator("message")

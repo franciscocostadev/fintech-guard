@@ -40,8 +40,18 @@ app = FastAPI(
     version=__version__,
     description=(
         "API de apoio ao atendimento bancário: classifica a intenção do cliente "
-        "e sinaliza risco de fraude/engenharia social."
+        "e sinaliza risco de fraude/engenharia social.\n\n"
+        "**Autenticação:** obtenha um JWT em `POST /auth/token` (ou pelo botão "
+        "*Authorize*) e envie `Authorization: Bearer <token>`.\n\n"
+        "**Erros:** `401` credenciais ausentes ou inválidas; `404` recurso "
+        "inexistente ou de outro usuário; `422` entrada inválida ou campo extra; "
+        "`429` excesso de tentativas de login. Erros nunca devolvem o valor enviado."
     ),
+    openapi_tags=[
+        {"name": "health", "description": "Disponibilidade da API e do banco. Público."},
+        {"name": "auth", "description": "Emissão de JWT e identidade do usuário. Login com rate limiting."},
+        {"name": "predict", "description": "Classificação de mensagens e consulta das próprias predições (JWT)."},
+    ],
     lifespan=lifespan,
     # sem Swagger em produção pra não publicar o mapa da API
     docs_url=None,
