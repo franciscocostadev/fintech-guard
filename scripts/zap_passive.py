@@ -73,6 +73,7 @@ def main():
             "CORS_ORIGINS": "http://localhost:3000,http://127.0.0.1:3000",
             "LOGIN_MAX_ATTEMPTS": "5", "LOGIN_WINDOW_SECONDS": "300",
             "SEED_USERNAME": "scan_owner", "SEED_PASSWORD": password,
+            "SEED_ADMIN_USERNAME": "scan_admin", "SEED_ADMIN_PASSWORD": password,
         }
         api_key = secrets.token_urlsafe(32)
         sensitive_values = [api_key, password]
@@ -151,6 +152,10 @@ def main():
                         request("POST", "/predict", 200 if args.baseline else 422, headers=owner,
                                 json={"message": "Teste sintético", "role": "admin"})
                         request("POST", "/predict", 422, headers=owner, json={"message": ""})
+                        if not args.baseline:
+                            request("POST", "/predict", 422, headers=owner,
+                                    json={"message": "Teste sintético", "channel": "sms"})
+                            request("GET", f"/predictions/{2**63}", 422, headers=owner)
                         request("POST", "/auth/token", 200 if args.baseline else 422,
                                 data={"username": "scan_owner", "password": password, "role": "admin"})
                         request("POST", "/auth/token", 401, data={"username": "scan_owner", "password": "wrong"})

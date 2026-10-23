@@ -2,6 +2,11 @@
 
 ## Resultado
 
+> **TP3:** o re-scan de 23/10/2026 sobre o código final manteve High, Medium e
+> Low em zero. Os relatórios estão em `reports/security/zap-tp3/` e a análise
+> em [auditoria-final-tp3.md](auditoria-final-tp3.md). Esta página registra o
+> ciclo do TP2.
+
 Scans executados em **26/09/2026**, com **OWASP ZAP 2.17.0**, Java 21 e
 61 regras passivas habilitadas. Alvo exclusivo: `http://127.0.0.1:18000`.
 
