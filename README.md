@@ -124,9 +124,9 @@ Os resultados e o ambiente de cada validação de Dados estão em
 [reports/TP3/resultado_validacao.md](reports/TP3/resultado_validacao.md).
 
 O GitHub Actions executa a suíte a cada push e pull request
-([security-tests.yml](.github/workflows/security-tests.yml)). Para o workflow
-impedir o merge, a branch `main` precisa exigir o check `security-tests`; veja
-a seção 5 da auditoria.
+([security-tests.yml](.github/workflows/security-tests.yml)). A branch `main`
+é protegida: só recebe mudanças por pull request, e o merge exige o check
+`security-tests` aprovado. A regra está descrita na seção 5 da auditoria.
 
 A [auditoria final do TP3](docs/auditoria-final-tp3.md) reúne o checklist de
 segurança, o re-scan do OWASP ZAP (nenhum alerta High, Medium ou Low; cinco
