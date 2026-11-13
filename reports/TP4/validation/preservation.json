@@ -1,0 +1,11 @@
+{
+  "baseline_commit": "3933d21c3a9396c52bb108155ca98d70d3d85950",
+  "tracked_files_in_baseline": 197,
+  "previous_files_preserved_byte_for_byte": 196,
+  "modified_previous_files": [
+    "README.md"
+  ],
+  "reason": "Índice TP4 e status de integração acrescentados ao README; API/dados/histórico preservados.",
+  "baseline_content_manifest_sha256": "79068e52fc2feec40c48eb15c5402e269bb3ced29f8670bb3163251a19626268",
+  "verification": "Comparação byte a byte por SHA-256 antes da cópia; nenhuma exclusão."
+}

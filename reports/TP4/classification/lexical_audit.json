@@ -1,0 +1,26 @@
+{
+  "purpose": "Diagnóstico posterior ao treino; sem seleção, retreino ou leitura textual de teste.",
+  "rows_examined": 483,
+  "vocabulary_size": 2827,
+  "idf_max_absolute_difference_from_training_only": 0.0,
+  "minimum_document_frequency": 2,
+  "substring_message_counts_training_only": {
+    "download": {
+      "benign": 0,
+      "threat": 144
+    },
+    "attachment": {
+      "benign": 0,
+      "threat": 131
+    },
+    "click": {
+      "benign": 0,
+      "threat": 58
+    },
+    "password": {
+      "benign": 0,
+      "threat": 50
+    }
+  },
+  "limitation": "Associações lexicais podem refletir estilo/coleta; não provam origem sintética nem generalização."
+}

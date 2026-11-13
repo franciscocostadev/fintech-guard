@@ -7,3 +7,19 @@ reports/TP2/hypothesis_test/protocol.json -text
 *.pdf binary
 notebooks/TP1/security/01_dataset_understanding.ipynb whitespace=cr-at-eol
 reports/TP2/hypothesis_test/protocol.json whitespace=cr-at-eol
+
+# TP4: preserve os bytes usados no treino, nos hashes e na auditoria.
+# Fontes históricas mantêm os blobs LF, mas todo checkout usa o CRLF auditado.
+# Inclui a quebra interna de uma mensagem; reproduz os hashes também no Linux.
+data/processed/banking77/train.csv text eol=crlf whitespace=cr-at-eol
+data/processed/banking77/test.csv text eol=crlf whitespace=cr-at-eol
+data/processed/TP4/banking77/train.csv -text whitespace=cr-at-eol
+reports/TP4/classification/protocol.json -text whitespace=cr-at-eol
+reports/TP4/classification/split_manifest.csv -text whitespace=cr-at-eol
+reports/TP4/banking77/protocol.json -text whitespace=cr-at-eol
+reports/TP4/banking77/split_manifest.csv -text whitespace=cr-at-eol
+scripts/tp4_classification.py -text
+scripts/tp4_banking77.py -text
+models/TP4/*/metadata.json -text whitespace=cr-at-eol
+*.joblib binary
+*.npz binary

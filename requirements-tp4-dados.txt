@@ -1,0 +1,4 @@
+# Ambiente de dados/inferência compatível com a API e os testes existentes.
+-r requirements-dev.txt
+numpy==2.5.4
+joblib==1.6.0

@@ -7,8 +7,35 @@ registro. Por enquanto, o classificador usa regras simples; ainda não foi
 integrado um modelo treinado.
 
 O repositório reúne a API com os controles OWASP auditados pelo OWASP ZAP e a
-análise exploratória dos dados, organizada por entrega (TP1, TP2 e TP3). Veja
+análise exploratória dos dados, organizada por entrega (TP1, TP2, TP3 e TP4). Veja
 [Dados e EDA](#dados-e-eda).
+
+## TP4: Dados e IA
+
+O TP4 retoma as duas funções da proposta original: **identificar a intenção de
+atendimento bancário com BANKING77** e **sinalizar conteúdo de ameaça com o dataset
+de segurança**. Os modelos têm classes, probabilidades, versões e avaliações
+separadas; um cliente legítimo pode estar relatando um golpe.
+
+O [índice TP4](reports/TP4/README.md) reúne o
+[notebook BANKING77 executado](notebooks/TP4/banking77/01_classificacao_intencoes.ipynb),
+o [relatório das 77 intenções](reports/TP4/classificacao_banking77.md), os
+[metadados do modelo bancário](models/TP4/banking77/metadata.json) e a
+[conferência das 12 rubricas](reports/TP4/rubricas_TP4.md). O componente de segurança
+permanece ativo, com [notebook próprio](notebooks/TP4/security/01_classificacao.ipynb),
+[modelo próprio](models/TP4/security/metadata.json) e
+[resultados separados](reports/TP4/classificacao.md).
+
+O [serviço de classificação](ml/classification_service.py) carrega os dois modelos
+e compõe seus resultados para o agente. **A integração de `/classify` com JWT e
+carregamento na inicialização da API permanece pendente**, assim como a conversa
+real do agente com três turnos, que exige chave e modelo OpenAI configurados.
+O [contrato para integração](reports/TP4/contrato_classify.md), o
+[guia do agente](reports/TP4/agente.md) e o
+[alinhamento para Francisco](reports/TP4/alinhamento_francisco.md) especificam os
+próximos passos. Testes offline com provedor/API simulados não são evidência de
+conversa real. O pentest é do Integrante B. Ambos os datasets estão em inglês;
+o desempenho em português ainda precisa de validação própria.
 
 ## TP3: evidências para avaliação
 
@@ -165,8 +192,8 @@ O projeto usa dois conjuntos de dados, sem misturar suas classes:
 
 | Dataset | Papel | Documentação |
 | --- | --- | --- |
-| Multiclass NLP Dataset for Phishing and Social Engineering Threat Detection (Zenodo) | Principal para o desafio de identificar fraude e engenharia social. 603 mensagens em inglês e seis classes após a limpeza. | [docs/dataset_security.md](docs/dataset_security.md) |
-| BANKING77 | Complementar: intenções de atendimento bancário, em inglês, com 77 categorias. As categorias não são rótulos de fraude. | [docs/dataset_banking77.md](docs/dataset_banking77.md) |
+| BANKING77 | Classificador principal de intenções de atendimento no TP4, em inglês, com 77 categorias. As categorias não são rótulos de fraude. | [docs/dataset_banking77.md](docs/dataset_banking77.md) |
+| Multiclass NLP Dataset for Phishing and Social Engineering Threat Detection (Zenodo) | Componente ativo de segurança. 603 mensagens em inglês e seis classes após a limpeza, agrupadas em benigno/ameaça no classificador TP4. Não determina a intenção pessoal do remetente. | [docs/dataset_security.md](docs/dataset_security.md) |
 
 Os notebooks ficam separados por entrega e são versionados com as saídas da
 execução:
@@ -177,19 +204,23 @@ execução:
 | TP1 | [Segurança](notebooks/TP1/security/01_dataset_understanding.ipynb) | Reconstrução do arquivo original, qualidade e limpeza inicial. |
 | TP2 | [Validação e EDA estatística](notebooks/TP2/security/01_validacao_e_eda_estatistica.ipynb) | Auditoria dos dados, sete atributos textuais, heatmaps de correlação (Pearson e Spearman), scatter plots, boxplots e teste de Mann-Whitney com p-valor interpretado. |
 | TP3 | [Regressão e transição](notebooks/TP3/security/01_regressao_e_transicao.ipynb) | Pré-processamento, regressão simples e múltipla, baseline, R²/RMSE, resíduos, Q-Q plot e limitações. |
+| TP4 | [Intenções bancárias](notebooks/TP4/banking77/01_classificacao_intencoes.ipynb) | TF-IDF + regressão logística multiclasse, GridSearchCV, baseline, matriz de confusão, métricas por classe, ROC-AUC e serialização. |
+| TP4 | [Conteúdo de segurança](notebooks/TP4/security/01_classificacao.ipynb) | Pipeline binário independente, GridSearchCV, baseline, métricas e limitações de detecção de ameaças. |
 
 O relatório de EDA do TP2 (problema, dados, análise, insights principais,
 limitações e próximos passos) está em
 [Markdown](reports/TP2/relatorio_eda.md) e [PDF](reports/TP2/relatorio_eda.pdf).
-As figuras e evidências ficam em `reports/TP1/`, `reports/TP2/` e `reports/TP3/`.
+As figuras e evidências ficam em `reports/TP1/`, `reports/TP2/`, `reports/TP3/` e `reports/TP4/`.
 
 A [entrega de Dados do TP3](reports/TP3/README.md) reúne também a pergunta de
 classificação em [Markdown](reports/TP3/pergunta_classificacao.md) e
 [PDF](reports/TP3/pergunta_classificacao.pdf), o
 [planejamento T2](reports/TP3/planejamento_T2.md) e os registros de validação.
-O alvo planejado é o conteúdo de ameaça das mensagens; as intenções de serviço
-bancário do BANKING77 constituem uma tarefa complementar e separada.
-O classificador supervisionado ainda não foi treinado.
+No registro histórico do TP3, o alvo planejado foi o conteúdo de ameaça das
+mensagens. O [adendo de arquitetura do TP4](reports/TP4/arquitetura_dupla.md)
+explica a retomada das intenções bancárias como tarefa principal de atendimento,
+mantendo a análise de segurança separada. Os dois classificadores supervisionados
+estão treinados no TP4; a API ainda depende da integração descrita acima.
 
 Principais resultados do TP2:
 
@@ -210,7 +241,12 @@ python -m scripts.execute_eda_notebook                 # TP1 — BANKING77
 python -m scripts.execute_security_notebook --tp TP1   # TP1 — segurança
 python -m scripts.execute_security_notebook            # TP2 — segurança
 python -m scripts.execute_tp3_notebook                 # TP3 — regressão
+python -m scripts.execute_tp4_notebook                 # TP4 — segurança
+python -m scripts.execute_tp4_banking_notebook          # TP4 — intenções bancárias
 ```
+
+Para reproduzir o TP4, instale `requirements-tp4-dados.txt`. O agente utiliza
+um ambiente separado, conforme [guia do agente](reports/TP4/agente.md).
 
 O DFD e a análise CIA estão em [docs/dfd.md](docs/dfd.md) e
 [docs/cia.md](docs/cia.md).

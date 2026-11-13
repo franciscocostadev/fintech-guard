@@ -1,0 +1,55 @@
+{
+  "experiment": "tp4-security-binary-v1",
+  "recorded_before_model_evaluation": true,
+  "seed": 42,
+  "dataset_sha256": "b416c4362ef0447340770b7c73a57d5705ecc8bbeaf2efc1c2a0de632707d5c1",
+  "mapping": {
+    "NOT-Malicious General Class": "benign",
+    "Baiting": "threat",
+    "Malware": "threat",
+    "Phishing": "threat",
+    "Pretexting": "threat",
+    "Scareware": "threat"
+  },
+  "positive_class": "threat",
+  "threshold": 0.5,
+  "split": "first StratifiedGroupKFold(5, shuffle=True, seed=42); stratify original category",
+  "cv": "5-fold StratifiedGroupKFold on training only; binary labels; seed=43",
+  "groups": "NFKC/casefold/space + URL/email/digit templates; equal or char5 Jaccard>=0.85, min80 chars; connected components",
+  "tfidf": {
+    "ngram_range": [
+      1,
+      2
+    ],
+    "sublinear_tf": true,
+    "max_features": 20000,
+    "lowercase": true,
+    "stop_words": null
+  },
+  "initial_classifier": {
+    "C": 1.0,
+    "class_weight": null,
+    "solver": "liblinear",
+    "max_iter": 2000
+  },
+  "grid": {
+    "classifier__C": [
+      0.1,
+      1.0,
+      10.0
+    ],
+    "tfidf__min_df": [
+      1,
+      2,
+      3
+    ],
+    "classifier__class_weight": [
+      null,
+      "balanced"
+    ]
+  },
+  "selection_metric": "f1_macro",
+  "candidates": 18,
+  "test_policy": "No choice of features, hyperparameters or threshold from test results; identical reruns are reproduction, not new validation.",
+  "limitations": "Internal test from a small dataset already explored in EDA; no claim of external independence or Portuguese banking validity."
+}

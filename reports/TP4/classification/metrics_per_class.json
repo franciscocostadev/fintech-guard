@@ -1,0 +1,152 @@
+{
+  "majority": {
+    "classification_report": {
+      "benign": {
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1-score": 0.0,
+        "support": 34.0
+      },
+      "threat": {
+        "precision": 0.7166666666666667,
+        "recall": 1.0,
+        "f1-score": 0.8349514563106796,
+        "support": 86.0
+      },
+      "accuracy": 0.7166666666666667,
+      "macro avg": {
+        "precision": 0.35833333333333334,
+        "recall": 0.5,
+        "f1-score": 0.4174757281553398,
+        "support": 120.0
+      },
+      "weighted avg": {
+        "precision": 0.5136111111111111,
+        "recall": 0.7166666666666667,
+        "f1-score": 0.5983818770226537,
+        "support": 120.0
+      }
+    },
+    "confusion_matrix": [
+      [
+        0,
+        34
+      ],
+      [
+        0,
+        86
+      ]
+    ],
+    "labels_order": [
+      "benign",
+      "threat"
+    ],
+    "cv_fold_macro_f1": [
+      0.41916167664670656,
+      0.41818181818181815,
+      0.41818181818181815,
+      0.41566265060240964,
+      0.41566265060240964
+    ]
+  },
+  "initial": {
+    "classification_report": {
+      "benign": {
+        "precision": 1.0,
+        "recall": 0.8823529411764706,
+        "f1-score": 0.9375,
+        "support": 34.0
+      },
+      "threat": {
+        "precision": 0.9555555555555556,
+        "recall": 1.0,
+        "f1-score": 0.9772727272727273,
+        "support": 86.0
+      },
+      "accuracy": 0.9666666666666667,
+      "macro avg": {
+        "precision": 0.9777777777777779,
+        "recall": 0.9411764705882353,
+        "f1-score": 0.9573863636363636,
+        "support": 120.0
+      },
+      "weighted avg": {
+        "precision": 0.9681481481481481,
+        "recall": 0.9666666666666667,
+        "f1-score": 0.9660037878787879,
+        "support": 120.0
+      }
+    },
+    "confusion_matrix": [
+      [
+        30,
+        4
+      ],
+      [
+        0,
+        86
+      ]
+    ],
+    "labels_order": [
+      "benign",
+      "threat"
+    ],
+    "cv_fold_macro_f1": [
+      0.9743386243386243,
+      0.9736263736263737,
+      0.9869689154336908,
+      0.9191666666666667,
+      0.921180931744312
+    ]
+  },
+  "tuned": {
+    "classification_report": {
+      "benign": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1-score": 1.0,
+        "support": 34.0
+      },
+      "threat": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1-score": 1.0,
+        "support": 86.0
+      },
+      "accuracy": 1.0,
+      "macro avg": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1-score": 1.0,
+        "support": 120.0
+      },
+      "weighted avg": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1-score": 1.0,
+        "support": 120.0
+      }
+    },
+    "confusion_matrix": [
+      [
+        34,
+        0
+      ],
+      [
+        0,
+        86
+      ]
+    ],
+    "labels_order": [
+      "benign",
+      "threat"
+    ],
+    "cv_fold_macro_f1": [
+      0.9873119686069327,
+      1.0,
+      1.0,
+      0.9875784351389423,
+      0.9875784351389423
+    ]
+  }
+}

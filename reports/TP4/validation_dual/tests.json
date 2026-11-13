@@ -1,0 +1,21 @@
+{
+  "executed_at_utc": "2026-11-13T11:56:14.618852+00:00",
+  "suites": {
+    "data_api": {
+      "exit_code": 0,
+      "command": "python -m pytest tests/ -v -p no:cacheprovider",
+      "tests": 124,
+      "errors": 0,
+      "failures": 0,
+      "skipped": 0
+    },
+    "agent_offline": {
+      "exit_code": 0,
+      "command": "python -m pytest agent_tests/ -v -p no:cacheprovider",
+      "tests": 53,
+      "errors": 0,
+      "failures": 0,
+      "skipped": 0
+    }
+  }
+}

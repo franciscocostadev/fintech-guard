@@ -1,0 +1,22 @@
+{
+  "tracked_before": 197,
+  "security_experiment_hashes_preserved": {
+    "models/TP4/security/classifier.joblib": true,
+    "models/TP4/security/metadata.json": true,
+    "scripts/tp4_classification.py": true,
+    "reports/TP4/classification/protocol.json": true,
+    "reports/TP4/classification/split_manifest.csv": true
+  },
+  "target_preexisting_files_checked": 245,
+  "ci_and_attributes_updated_for_tp4": true,
+  "banking_csv_bytes_match_training_audit": true,
+  "banking_historical_git_blobs_preserved_with_explicit_checkout_eol": true,
+  "tracked_local_bytes_preserved_except_documentation_ci_attributes": 193,
+  "tracked_file_exceptions": [
+    ".gitattributes",
+    ".github/workflows/security-tests.yml",
+    "README.md",
+    "reports/TP3/rubricas_TP3.md"
+  ],
+  "historical_code_data_notebook_outputs_api_tests_unchanged_locally": true
+}

@@ -1,0 +1,16 @@
+{
+  "notebooks": {
+    "security": {
+      "code_cells_executed": 12,
+      "embedded_figures": 5
+    },
+    "banking77": {
+      "code_cells_executed": 12,
+      "embedded_figures": 6
+    }
+  },
+  "local_links_checked": 214,
+  "files_inspected": 99,
+  "problems": [],
+  "real_agent_demo_present": false
+}

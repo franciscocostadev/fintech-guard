@@ -1,0 +1,207 @@
+{
+  "executed_at_utc": "2026-11-13T18:06:03.002808+00:00",
+  "workflow_sha256": "8bc4f83774d4819e74dfc4a3ab3139fbfa9019683ee0eef3937656ffb06051f3",
+  "yaml_and_job_contract_validated": true,
+  "gate_cases": [
+    {
+      "data_api": "success",
+      "agent": "success",
+      "exit_code": 0
+    },
+    {
+      "data_api": "success",
+      "agent": "failure",
+      "exit_code": 1
+    },
+    {
+      "data_api": "success",
+      "agent": "cancelled",
+      "exit_code": 1
+    },
+    {
+      "data_api": "success",
+      "agent": "skipped",
+      "exit_code": 1
+    },
+    {
+      "data_api": "failure",
+      "agent": "success",
+      "exit_code": 1
+    },
+    {
+      "data_api": "failure",
+      "agent": "failure",
+      "exit_code": 1
+    },
+    {
+      "data_api": "failure",
+      "agent": "cancelled",
+      "exit_code": 1
+    },
+    {
+      "data_api": "failure",
+      "agent": "skipped",
+      "exit_code": 1
+    },
+    {
+      "data_api": "cancelled",
+      "agent": "success",
+      "exit_code": 1
+    },
+    {
+      "data_api": "cancelled",
+      "agent": "failure",
+      "exit_code": 1
+    },
+    {
+      "data_api": "cancelled",
+      "agent": "cancelled",
+      "exit_code": 1
+    },
+    {
+      "data_api": "cancelled",
+      "agent": "skipped",
+      "exit_code": 1
+    },
+    {
+      "data_api": "skipped",
+      "agent": "success",
+      "exit_code": 1
+    },
+    {
+      "data_api": "skipped",
+      "agent": "failure",
+      "exit_code": 1
+    },
+    {
+      "data_api": "skipped",
+      "agent": "cancelled",
+      "exit_code": 1
+    },
+    {
+      "data_api": "skipped",
+      "agent": "skipped",
+      "exit_code": 1
+    }
+  ],
+  "dependency_checks": [
+    {
+      "environment": "data_api",
+      "exit_code": 0,
+      "compatible": true
+    },
+    {
+      "environment": "agent_offline",
+      "exit_code": 0,
+      "compatible": true
+    }
+  ],
+  "git_filter_checks": [
+    {
+      "path": "data/processed/banking77/train.csv",
+      "git_roundtrip_preserves_working_bytes": true,
+      "method": "text eol=crlf: historical LF blob unchanged, checkout restores audited CRLF",
+      "sha256": "d6e43f5a50a4edd5801f13594dba5f985d911351452d3449c344d765627a7a04"
+    },
+    {
+      "path": "data/processed/banking77/test.csv",
+      "git_roundtrip_preserves_working_bytes": true,
+      "method": "text eol=crlf: historical LF blob unchanged, checkout restores audited CRLF",
+      "sha256": "25fdff3f528bc7be0e599af086f5cac7998a11a37dd2164da53e61b87a2c308c"
+    },
+    {
+      "path": "data/processed/TP4/banking77/train.csv",
+      "git_roundtrip_preserves_working_bytes": true,
+      "method": "-text or binary: no conversion",
+      "sha256": "a49e6303342394d0a220561da6835ea656df67954983e78e1827ebef0bb4fbdb"
+    },
+    {
+      "path": "data/processed/security/phishing_nlp_dataset.csv",
+      "git_roundtrip_preserves_working_bytes": true,
+      "method": "-text or binary: no conversion",
+      "sha256": "b416c4362ef0447340770b7c73a57d5705ecc8bbeaf2efc1c2a0de632707d5c1"
+    },
+    {
+      "path": "reports/TP4/classification/protocol.json",
+      "git_roundtrip_preserves_working_bytes": true,
+      "method": "-text or binary: no conversion",
+      "sha256": "7f7753731e5e320bae1e0658b5de93d1eb7db4faf8e1358982b3f01287a7a8f8"
+    },
+    {
+      "path": "reports/TP4/classification/split_manifest.csv",
+      "git_roundtrip_preserves_working_bytes": true,
+      "method": "-text or binary: no conversion",
+      "sha256": "fa0d824d40147f4264e7af94e48e8a3effacc266f083f69b25726348413efc3e"
+    },
+    {
+      "path": "reports/TP4/banking77/protocol.json",
+      "git_roundtrip_preserves_working_bytes": true,
+      "method": "-text or binary: no conversion",
+      "sha256": "f8864634c8449722ec82b666417f3eb6bc81add904852170838d51dc47c9d364"
+    },
+    {
+      "path": "reports/TP4/banking77/split_manifest.csv",
+      "git_roundtrip_preserves_working_bytes": true,
+      "method": "-text or binary: no conversion",
+      "sha256": "162771d019c13b9da004191b4cc3d0f8fafc4a9defab23757d3fefa7cbe2633a"
+    },
+    {
+      "path": "scripts/tp4_classification.py",
+      "git_roundtrip_preserves_working_bytes": true,
+      "method": "-text or binary: no conversion",
+      "sha256": "e9e2818620af433aad1cd88af0d367dba99bda2f6d97c0c496afac24d4942316"
+    },
+    {
+      "path": "scripts/tp4_banking77.py",
+      "git_roundtrip_preserves_working_bytes": true,
+      "method": "-text or binary: no conversion",
+      "sha256": "c927514f69072e9349238886d9077eb3adc85a1248a769041e71909cae6798fb"
+    },
+    {
+      "path": "models/TP4/security/metadata.json",
+      "git_roundtrip_preserves_working_bytes": true,
+      "method": "-text or binary: no conversion",
+      "sha256": "2ac2fef2a6e10ca6e0ffd9021ee361b62ddceee1e34e67776ec44921788082f2"
+    },
+    {
+      "path": "models/TP4/banking77/metadata.json",
+      "git_roundtrip_preserves_working_bytes": true,
+      "method": "-text or binary: no conversion",
+      "sha256": "bbddcd5609336c31d7b37ad3eeb243151b49e7d2ca6c5c0fd302006ee6611e64"
+    },
+    {
+      "path": "models/TP4/security/classifier.joblib",
+      "git_roundtrip_preserves_working_bytes": true,
+      "method": "-text or binary: no conversion",
+      "sha256": "4b8078d819e124d5404a8266bd8af5c091b11659b1586dca70410bb54efaa6de"
+    },
+    {
+      "path": "models/TP4/banking77/classifier.joblib",
+      "git_roundtrip_preserves_working_bytes": true,
+      "method": "-text or binary: no conversion",
+      "sha256": "a59717eaed2563e6fe07b17b8dfb85e13018fac2e7985f00801066bf6ada03dd"
+    },
+    {
+      "path": "reports/TP4/banking77/test_probabilities.npz",
+      "git_roundtrip_preserves_working_bytes": true,
+      "method": "-text or binary: no conversion",
+      "sha256": "988d9eb9af423568004d897b2992178aff187b37d62119b9f58eba6724fd4fdb"
+    }
+  ],
+  "banking_line_endings": [
+    {
+      "path": "data/processed/banking77/train.csv",
+      "audited_checkout_differs_from_lf_blob_only_in_line_endings": true,
+      "local_bytes_match_training_audit": true,
+      "historical_git_blob_preserved": true
+    },
+    {
+      "path": "data/processed/banking77/test.csv",
+      "audited_checkout_differs_from_lf_blob_only_in_line_endings": true,
+      "local_bytes_match_training_audit": true,
+      "historical_git_blob_preserved": true
+    }
+  ],
+  "github_actions_run": false,
+  "git_index_and_head_unchanged": true
+}
