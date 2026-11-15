@@ -1,0 +1,41 @@
+{
+  "model_version": "tp4-security-binary-v1",
+  "task": "security_binary",
+  "classes": [
+    "benign",
+    "threat"
+  ],
+  "positive_class": "threat",
+  "decision_threshold": 0.5,
+  "max_text_characters": 4000,
+  "probability_calibrated": false,
+  "dataset_sha256": "b416c4362ef0447340770b7c73a57d5705ecc8bbeaf2efc1c2a0de632707d5c1",
+  "artifact_sha256": "4b8078d819e124d5404a8266bd8af5c091b11659b1586dca70410bb54efaa6de",
+  "split_manifest_sha256": "fa0d824d40147f4264e7af94e48e8a3effacc266f083f69b25726348413efc3e",
+  "protocol_sha256": "7f7753731e5e320bae1e0658b5de93d1eb7db4faf8e1358982b3f01287a7a8f8",
+  "training_script_sha256": "e9e2818620af433aad1cd88af0d367dba99bda2f6d97c0c496afac24d4942316",
+  "training_rows": 483,
+  "test_rows": 120,
+  "fitted_on_test": false,
+  "mapping": {
+    "NOT-Malicious General Class": "benign",
+    "Baiting": "threat",
+    "Malware": "threat",
+    "Phishing": "threat",
+    "Pretexting": "threat",
+    "Scareware": "threat"
+  },
+  "best_params": {
+    "classifier__C": 10.0,
+    "classifier__class_weight": null,
+    "tfidf__min_df": 2
+  },
+  "dependencies": {
+    "scikit-learn": "1.9.1",
+    "numpy": "2.5.4",
+    "scipy": "1.18.1",
+    "joblib": "1.6.0",
+    "pandas": "2.2.3"
+  },
+  "language": "English dataset; Portuguese banking performance not validated"
+}

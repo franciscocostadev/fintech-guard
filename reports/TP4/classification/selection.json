@@ -1,0 +1,10 @@
+{
+  "best_params": {
+    "classifier__C": 10.0,
+    "classifier__class_weight": null,
+    "tfidf__min_df": 2
+  },
+  "best_cv_macro_f1": 0.9924937677769634,
+  "selection_uses_test": false,
+  "threshold": 0.5
+}

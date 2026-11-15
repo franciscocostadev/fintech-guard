@@ -1,0 +1,70 @@
+{
+  "scope": "local real-model inference plus agent response validator; no HTTP, JWT endpoint, Runner or LLM execution",
+  "synthetic_messages": true,
+  "observations": [
+    {
+      "text": "I lost my bank card. How can I report it through the official support channel?",
+      "response": {
+        "task": "banking_intent_with_security",
+        "intent": "lost_or_stolen_card",
+        "probability": 0.31309366720599824,
+        "model_version": "tp4-banking77-v1",
+        "security": {
+          "task": "security_binary",
+          "label": "benign",
+          "probability": 0.5639262252484223,
+          "probabilities": {
+            "benign": 0.5639262252484223,
+            "threat": 0.4360737747515777
+          },
+          "model_version": "tp4-security-binary-v1"
+        }
+      }
+    },
+    {
+      "text": "When will my replacement card arrive?",
+      "response": {
+        "task": "banking_intent_with_security",
+        "intent": "card_arrival",
+        "probability": 0.49262160129389804,
+        "model_version": "tp4-banking77-v1",
+        "security": {
+          "task": "security_binary",
+          "label": "threat",
+          "probability": 0.6925546678085732,
+          "probabilities": {
+            "benign": 0.3074453321914268,
+            "threat": 0.6925546678085732
+          },
+          "model_version": "tp4-security-binary-v1"
+        }
+      }
+    },
+    {
+      "text": "I made a bank transfer by mistake. How can I request its cancellation?",
+      "response": {
+        "task": "banking_intent_with_security",
+        "intent": "cancel_transfer",
+        "probability": 0.25431867486192933,
+        "model_version": "tp4-banking77-v1",
+        "security": {
+          "task": "security_binary",
+          "label": "benign",
+          "probability": 0.6369385035571027,
+          "probabilities": {
+            "benign": 0.6369385035571027,
+            "threat": 0.36306149644289737
+          },
+          "model_version": "tp4-security-binary-v1"
+        }
+      }
+    }
+  ],
+  "agent_validator_accepted": 3,
+  "observed_banking_intents": [
+    "lost_or_stolen_card",
+    "card_arrival",
+    "cancel_transfer"
+  ],
+  "distinct_intents_observed": 3
+}

@@ -18,7 +18,7 @@ avaliação e apresenta separadamente as evidências disponíveis após a revis�
 | 7 | Pergunta de classificação, classes e distribuição | Não demonstrou | [Pergunta](pergunta_classificacao.md) e [PDF](pergunta_classificacao.pdf): 603 mensagens, seis classes, proposta binária 171 benignas/432 ameaças |
 | 8 | Justificativa de ML supervisionado com base nos dados | Não demonstrou | Pergunta, seção de justificativa: rótulos disponíveis, informação textual, p ≈ 0,1912 do TP2 e limites da regressão contínua |
 | 9 | Plano T2: candidato, features e justificativa | Não demonstrou | [Plano](planejamento_T2.md): TF-IDF + regressão logística; LinearSVC como comparação; poucos exemplos, representação esparsa, prevenção de vazamento e métricas por classe |
-| 10 | Colega adversário e URL/IP registrados | Demonstrou | **Pendente na documentação atual:** usuário confirmou que não foram definidos; [plano, seção 6](planejamento_T2.md) e [auditoria, seção 7](../../docs/auditoria-final-tp3.md) |
+| 10 | Colega adversário e URL/IP registrados | Demonstrou | **Pendente na documentação atual:** colega adversário e URL/IP ainda não definidos; [plano, seção 6](planejamento_T2.md) e [auditoria, seção 7](../../docs/auditoria-final-tp3.md) |
 | 11 | Checklist confirma resolução de Medium/High ZAP | Demonstrou | [Auditoria final](../../docs/auditoria-final-tp3.md) e relatórios vinculados: scan final de 23/10 sem Medium/High; não houve novo scan nesta revisão |
 | 12 | /docs acessível com schemas de entrada/saída | Não demonstrou | [Validação HTTP](revisao_20261111/openapi-validacao.json) e [OpenAPI](revisao_20261111/openapi.json): HTTP 200, cinco operações, schemas e referências conferidos |
 

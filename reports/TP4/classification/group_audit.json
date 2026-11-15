@@ -1,0 +1,11 @@
+{
+  "groups": 552,
+  "groups_with_multiple_rows": 40,
+  "largest_group": 5,
+  "similar_pairs": 53,
+  "mixed_binary_label_groups": 0,
+  "train_rows": 483,
+  "test_rows": 120,
+  "cross_split_groups": 0,
+  "cross_cv_fold_groups": 0
+}

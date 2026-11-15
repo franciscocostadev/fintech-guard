@@ -1,0 +1,12 @@
+{
+  "best_params": {
+    "classifier__C": 10.0,
+    "tfidf__ngram_range": [
+      1,
+      1
+    ]
+  },
+  "best_cv_macro_f1": 0.8806677838277522,
+  "selection_uses_test": false,
+  "grid_seconds": 247.20692939999572
+}

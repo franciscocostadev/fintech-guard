@@ -1,0 +1,17 @@
+{
+  "source_train_rows": 9993,
+  "test_rows": 3079,
+  "retained_train_rows": 9985,
+  "excluded_train_rows": 8,
+  "classes": 77,
+  "groups": 13047,
+  "multirow_groups": 22,
+  "largest_group": 3,
+  "similar_pairs": 25,
+  "mixed_label_groups_total": 0,
+  "mixed_label_groups_retained_train": 0,
+  "test_groups_with_multiple_rows": 1,
+  "cross_split_groups_after_exclusion": 0,
+  "test_rows_modified": 0,
+  "note": "Similar cases with different labels are retained within one CV group; no relabeling. Exclusions depend on text similarity, not model output."
+}
