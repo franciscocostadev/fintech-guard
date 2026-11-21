@@ -7,10 +7,12 @@ O código em `fintech_agent/` implementa `Agent`, a ferramenta
 A ferramenta chama `POST /classify` por HTTP com JWT e recebe as duas
 classificações separadas: intenção BANKING77 e conteúdo de segurança.
 
-**A conversa real de três turnos está pendente.** Ainda é necessário configurar
-chave/modelo OpenAI e integrar o endpoint à API de B. Nenhuma chamada paga foi
-feita nesta validação. Testes com modelo falso e transporte HTTP simulado
-verificam a implementação; não demonstram comportamento real do LLM.
+**A conversa real de três turnos foi executada** (21/11/2026) com `gpt-4o-mini`,
+contra a API viva (`/classify` com JWT). A evidência está em
+[`agente_transcricao.json`](agente_transcricao.json): três turnos, três intenções
+distintas observadas (`lost_or_stolen_card`, `card_arrival`, `cancel_transfer`),
+usando `openai-agents 0.24.0`. Além dessa execução real, testes com modelo falso e
+transporte HTTP simulado verificam a implementação (ver "Ambiente e testes").
 
 ## Fluxo e significado dos resultados
 
@@ -137,5 +139,6 @@ não prova aprovação da rubrica. A conversa não é um teste estatístico do m
 - [OpenAI Docs — execução e continuidade](https://developers.openai.com/api/docs/guides/agents/running-agents).
 - [OpenAI Docs — tracing](https://developers.openai.com/api/docs/guides/agents/integrations-observability).
 
-As assinaturas usadas também foram conferidas no SDK instalado. Endpoint real,
-credenciais/modelo e conversa efetivamente executada permanecem como pendências.
+As assinaturas usadas também foram conferidas no SDK instalado. O endpoint real e
+a conversa de três turnos foram executados; a evidência está em
+[`agente_transcricao.json`](agente_transcricao.json).
