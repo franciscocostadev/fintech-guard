@@ -15,6 +15,7 @@ from app.db.session import engine
 from app.core.middleware import (
     LoginRateLimitMiddleware, SecurityHeadersMiddleware, security_headers,
 )
+from app.services.classifier import STATE_ATTR, build_classification_service
 from app.services.rate_limit import LoginRateLimiter
 
 logging.basicConfig(
@@ -30,6 +31,9 @@ settings = get_settings()
 async def lifespan(app: FastAPI):
     # em produção isso vira migração (Alembic)
     SQLModel.metadata.create_all(bind=engine)
+    # Carrega os dois modelos uma vez por processo. Falha de artefato (ausente,
+    # hash ou versão divergente) interrompe o startup: sem prontidão fictícia.
+    setattr(app.state, STATE_ATTR, build_classification_service())
     logger.info("Fintech Guard API iniciada (env=%s)", settings.environment)
     yield
     logger.info("Fintech Guard API encerrada")
@@ -51,6 +55,7 @@ app = FastAPI(
         {"name": "health", "description": "Disponibilidade da API e do banco. Público."},
         {"name": "auth", "description": "Emissão de JWT e identidade do usuário. Login com rate limiting."},
         {"name": "predict", "description": "Classificação de mensagens e consulta das próprias predições (JWT)."},
+        {"name": "classify", "description": "Classificação de intenção BANKING77 + segurança com modelo treinado (JWT)."},
     ],
     lifespan=lifespan,
     # sem Swagger em produção pra não publicar o mapa da API
@@ -61,6 +66,10 @@ app = FastAPI(
 
 app.state.login_limiter = LoginRateLimiter(
     settings.login_max_attempts, settings.login_window_seconds
+)
+# Limite por usuário na inferência /classify (mesma janela deslizante).
+app.state.classify_limiter = LoginRateLimiter(
+    settings.classify_max_requests, settings.classify_window_seconds
 )
 app.add_middleware(LoginRateLimitMiddleware)
 app.add_middleware(

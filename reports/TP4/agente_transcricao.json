@@ -1,0 +1,95 @@
+{
+  "execution": "real_openai_and_http_api",
+  "created_at_utc": "2026-11-21T23:03:17.979612+00:00",
+  "openai_agents_version": "0.24.0",
+  "openai_version": "3.50.0",
+  "model": "gpt-4o-mini",
+  "task": "banking_intent_with_security",
+  "tracing_disabled": true,
+  "store": false,
+  "messages": "synthetic_english_examples_not_evaluation_dataset",
+  "observed_intents": [
+    "lost_or_stolen_card",
+    "card_arrival",
+    "cancel_transfer"
+  ],
+  "distinct_intents_observed": 3,
+  "response_quality_review": "pending_manual_review",
+  "turns": [
+    {
+      "user": "I lost my bank card. How can I report it through the official support channel?",
+      "assistant": "Para reportar seu cartão de banco perdido, recomendo que você entre em contato com o suporte oficial do seu banco. Normalmente, você pode fazer isso através do aplicativo bancário, ligando para a central de atendimento ou visitando uma agência. \n\nEm relação à sua mensagem, a análise indica que é uma solicitação legítima, mas é sempre bom manter a cautela ao compartilhar informações pessoais. Se precisar de ajuda específica, entre em contato diretamente com o banco.",
+      "tool_events": [
+        {
+          "status": "ok",
+          "classification": {
+            "task": "banking_intent_with_security",
+            "intent": "lost_or_stolen_card",
+            "probability": 0.31309366720599824,
+            "model_version": "tp4-banking77-v1",
+            "security": {
+              "label": "benign",
+              "model_version": "tp4-security-binary-v1",
+              "probabilities": {
+                "benign": 0.5639262252484223,
+                "threat": 0.4360737747515777
+              },
+              "probability": 0.5639262252484223,
+              "task": "security_binary"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "user": "When will my replacement card arrive?",
+      "assistant": "Sua pergunta sobre a chegada do cartão de substituição indica uma solicitação legítima, mas a análise de segurança apresentou uma classificação de \"ameaça\". Isso não necessariamente significa que há uma intenção maliciosa, mas é um alerta para ter cautela.\n\nPara saber quando seu cartão de substituição chegará, recomendo que você contate diretamente o suporte oficial do seu banco, pois eles poderão fornecer informações detalhadas sobre seu pedido.",
+      "tool_events": [
+        {
+          "status": "ok",
+          "classification": {
+            "task": "banking_intent_with_security",
+            "intent": "card_arrival",
+            "probability": 0.49262160129389804,
+            "model_version": "tp4-banking77-v1",
+            "security": {
+              "label": "threat",
+              "model_version": "tp4-security-binary-v1",
+              "probabilities": {
+                "benign": 0.3074453321914268,
+                "threat": 0.6925546678085732
+              },
+              "probability": 0.6925546678085732,
+              "task": "security_binary"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "user": "I made a bank transfer by mistake. How can I request its cancellation?",
+      "assistant": "Para solicitar o cancelamento de uma transferência bancária feita por engano, você deve entrar em contato com o suporte oficial do seu banco o mais rápido possível. As políticas de cancelamento variam conforme a instituição, e eles poderão orientá-lo sobre os próximos passos.\n\nA análise indica que sua mensagem é legítima, mas sempre é bom ter cautela ao discutir questões financeiras. ",
+      "tool_events": [
+        {
+          "status": "ok",
+          "classification": {
+            "task": "banking_intent_with_security",
+            "intent": "cancel_transfer",
+            "probability": 0.25431867486192933,
+            "model_version": "tp4-banking77-v1",
+            "security": {
+              "label": "benign",
+              "model_version": "tp4-security-binary-v1",
+              "probabilities": {
+                "benign": 0.6369385035571027,
+                "threat": 0.36306149644289737
+              },
+              "probability": 0.6369385035571027,
+              "task": "security_binary"
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

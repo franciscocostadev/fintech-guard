@@ -1,0 +1,898 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Fintech Guard API",
+    "description": "API de apoio ao atendimento bancário: classifica a intenção do cliente e sinaliza risco de fraude/engenharia social.\n\n**Autenticação:** obtenha um JWT em `POST /auth/token` (ou pelo botão *Authorize*) e envie `Authorization: Bearer <token>`.\n\n**Erros:** `401` credenciais ausentes ou inválidas; `404` recurso inexistente ou de outro usuário; `422` entrada inválida ou campo extra; `429` excesso de tentativas de login. Erros nunca devolvem o valor enviado.",
+    "version": "0.1.0"
+  },
+  "paths": {
+    "/health": {
+      "get": {
+        "tags": [
+          "health"
+        ],
+        "summary": "Status da API",
+        "description": "Rota pública. Verifica o banco com `SELECT 1` sem expor o motivo de falhas.",
+        "operationId": "health_health_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HealthResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/auth/token": {
+      "post": {
+        "tags": [
+          "auth"
+        ],
+        "summary": "Gerar token",
+        "description": "Troca usuário e senha (formulário OAuth2 password, `application/x-www-form-urlencoded`) por um JWT HS256 com validade de 15 minutos por padrão.\n\n**Rate limiting:** 5 tentativas por IP em janela deslizante de 300 s. Toda chamada conta, inclusive logins válidos e bodies inválidos; a sexta responde **429** com `Retry-After`. O campo `scope` é aceito pelo Swagger, mas não concede permissões: o papel vem do banco.",
+        "operationId": "login_for_access_token_auth_token_post",
+        "requestBody": {
+          "content": {
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "$ref": "#/components/schemas/LoginRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "JWT para o header `Authorization: Bearer <token>`.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Token"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Usuário inexistente, inativo ou senha incorreta.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "detail": "Usuário ou senha inválidos."
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Entrada inválida ou com campos não previstos. O valor recebido não é devolvido.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidationErrorResponse"
+                },
+                "example": {
+                  "detail": "Requisição inválida.",
+                  "erros": [
+                    {
+                      "campo": "body.message",
+                      "erro": "String should have at most 1000 characters"
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Limite de tentativas de login por IP excedido.",
+            "headers": {
+              "Retry-After": {
+                "description": "Segundos até a próxima tentativa.",
+                "schema": {
+                  "type": "integer"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "detail": "Muitas tentativas de login. Tente novamente mais tarde."
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/auth/me": {
+      "get": {
+        "tags": [
+          "auth"
+        ],
+        "summary": "Usuário logado",
+        "description": "Retorna a identidade do token. Não recebe ID: sempre o próprio usuário.",
+        "operationId": "read_current_user_auth_me_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserPublic"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Token ausente, adulterado, expirado ou de usuário inativo.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "detail": "Credenciais inválidas ou expiradas."
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "OAuth2Password": []
+          }
+        ]
+      }
+    },
+    "/predict": {
+      "post": {
+        "tags": [
+          "predict"
+        ],
+        "summary": "Classificar mensagem",
+        "description": "Classifica a intenção da mensagem e o risco de fraude ou engenharia social, e registra a predição em nome do usuário do token.\n\nSomente o hash SHA-256 da mensagem é guardado. O body aceita apenas `message` e `channel`; qualquer outro campo gera **422**. O header `Location` aponta para `GET /predictions/{id}`.",
+        "operationId": "predict_predict_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PredictRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Predição registrada.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PredictResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Token ausente, adulterado, expirado ou de usuário inativo.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "detail": "Credenciais inválidas ou expiradas."
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Entrada inválida ou com campos não previstos. O valor recebido não é devolvido.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidationErrorResponse"
+                },
+                "example": {
+                  "detail": "Requisição inválida.",
+                  "erros": [
+                    {
+                      "campo": "body.message",
+                      "erro": "String should have at most 1000 characters"
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "OAuth2Password": []
+          }
+        ]
+      }
+    },
+    "/predictions/{prediction_id}": {
+      "get": {
+        "tags": [
+          "predict"
+        ],
+        "summary": "Consultar uma predição própria",
+        "description": "Retorna uma predição do usuário autenticado. A consulta filtra por ID **e** proprietário; predições de outro usuário respondem o mesmo **404** de um ID inexistente, inclusive para o papel `admin`.",
+        "operationId": "read_prediction_predictions__prediction_id__get",
+        "security": [
+          {
+            "OAuth2Password": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "prediction_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "maximum": 9223372036854775807,
+              "exclusiveMinimum": 0,
+              "description": "ID retornado por `POST /predict`.",
+              "title": "Prediction Id"
+            },
+            "description": "ID retornado por `POST /predict`."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Predição do usuário autenticado.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PredictionPublic"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Token ausente, adulterado, expirado ou de usuário inativo.",
+            "content": {
+              "application/json": {
+                "example": {
+                  "detail": "Credenciais inválidas ou expiradas."
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Predição inexistente ou de outro usuário.",
+            "content": {
+              "application/json": {
+                "example": {
+                  "detail": "Predição não encontrada."
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Entrada inválida ou com campos não previstos. O valor recebido não é devolvido.",
+            "content": {
+              "application/json": {
+                "example": {
+                  "detail": "Requisição inválida.",
+                  "erros": [
+                    {
+                      "campo": "body.message",
+                      "erro": "String should have at most 1000 characters"
+                    }
+                  ]
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/ValidationErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/classify": {
+      "post": {
+        "tags": [
+          "classify"
+        ],
+        "summary": "Classificar intenção bancária e segurança",
+        "description": "Recebe `{\"text\": \"...\"}` (string de 1 a 4000 caracteres), autentica via JWT e retorna a intenção BANKING77 com sua probabilidade, mais a análise de segurança do conteúdo.\n\nO body aceita **apenas** `text`; qualquer outro campo, tipo incorreto, vazio ou acima de 4000 caracteres gera **422**. Os dois scores têm significados distintos e não devem ser somados: `threat` descreve o conteúdo e não acusa o remetente.",
+        "operationId": "classify_classify_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ClassifyRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Intenção prevista, probabilidade e análise de segurança.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ClassifyResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Token ausente, adulterado, expirado ou de usuário inativo.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "detail": "Credenciais inválidas ou expiradas."
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Entrada inválida ou com campos não previstos. O valor recebido não é devolvido.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidationErrorResponse"
+                },
+                "example": {
+                  "detail": "Requisição inválida.",
+                  "erros": [
+                    {
+                      "campo": "body.message",
+                      "erro": "String should have at most 1000 characters"
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Limite de classificações por usuário excedido na janela.",
+            "headers": {
+              "Retry-After": {
+                "description": "Segundos até a próxima tentativa.",
+                "schema": {
+                  "type": "integer"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "detail": "Muitas classificações em curto intervalo. Tente novamente mais tarde."
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Modelo de classificação indisponível. Nenhum detalhe interno é exposto.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "detail": "Serviço de classificação indisponível."
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "OAuth2Password": []
+          }
+        ]
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Channel": {
+        "type": "string",
+        "enum": [
+          "chat",
+          "whatsapp",
+          "email",
+          "telefone"
+        ],
+        "title": "Channel"
+      },
+      "ClassifyRequest": {
+        "properties": {
+          "text": {
+            "type": "string",
+            "maxLength": 4000,
+            "minLength": 1,
+            "title": "Text",
+            "description": "Texto do cliente a classificar (1 a 4000 caracteres Unicode).",
+            "examples": [
+              "I lost my bank card. How can I report it through the official support channel?"
+            ]
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "text"
+        ],
+        "title": "ClassifyRequest"
+      },
+      "ClassifyResponse": {
+        "properties": {
+          "task": {
+            "type": "string",
+            "const": "banking_intent_with_security",
+            "title": "Task"
+          },
+          "intent": {
+            "type": "string",
+            "title": "Intent",
+            "description": "Uma das 77 intenções originais de BANKING77."
+          },
+          "probability": {
+            "type": "number",
+            "maximum": 1.0,
+            "minimum": 0.0,
+            "title": "Probability",
+            "description": "predict_proba da intenção de maior score."
+          },
+          "model_version": {
+            "type": "string",
+            "title": "Model Version",
+            "description": "Versão do artefato BANKING77."
+          },
+          "security": {
+            "$ref": "#/components/schemas/SecurityResult"
+          }
+        },
+        "type": "object",
+        "required": [
+          "task",
+          "intent",
+          "probability",
+          "model_version",
+          "security"
+        ],
+        "title": "ClassifyResponse",
+        "description": "Resposta composta de `POST /classify` — exatamente cinco campos no topo."
+      },
+      "ErrorResponse": {
+        "properties": {
+          "detail": {
+            "type": "string",
+            "title": "Detail"
+          }
+        },
+        "type": "object",
+        "required": [
+          "detail"
+        ],
+        "title": "ErrorResponse"
+      },
+      "FieldError": {
+        "properties": {
+          "campo": {
+            "type": "string",
+            "title": "Campo",
+            "description": "Local do erro, por exemplo `body.message`."
+          },
+          "erro": {
+            "type": "string",
+            "title": "Erro"
+          }
+        },
+        "type": "object",
+        "required": [
+          "campo",
+          "erro"
+        ],
+        "title": "FieldError"
+      },
+      "HealthResponse": {
+        "properties": {
+          "status": {
+            "type": "string",
+            "title": "Status",
+            "description": "`ok` ou `degraded` quando o banco não responde."
+          },
+          "app": {
+            "type": "string",
+            "title": "App"
+          },
+          "version": {
+            "type": "string",
+            "title": "Version"
+          },
+          "environment": {
+            "type": "string",
+            "title": "Environment"
+          },
+          "database": {
+            "type": "string",
+            "title": "Database",
+            "description": "`up` ou `down`."
+          }
+        },
+        "type": "object",
+        "required": [
+          "status",
+          "app",
+          "version",
+          "environment",
+          "database"
+        ],
+        "title": "HealthResponse"
+      },
+      "LoginRequest": {
+        "properties": {
+          "username": {
+            "type": "string",
+            "maxLength": 64,
+            "minLength": 1,
+            "title": "Username"
+          },
+          "password": {
+            "type": "string",
+            "maxLength": 72,
+            "minLength": 1,
+            "title": "Password"
+          },
+          "grant_type": {
+            "type": "string",
+            "const": "password",
+            "title": "Grant Type",
+            "default": "password"
+          },
+          "scope": {
+            "type": "string",
+            "maxLength": 256,
+            "title": "Scope",
+            "default": ""
+          },
+          "client_id": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 128
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Client Id"
+          },
+          "client_secret": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 256
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Client Secret"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "username",
+          "password"
+        ],
+        "title": "LoginRequest"
+      },
+      "PredictRequest": {
+        "properties": {
+          "message": {
+            "type": "string",
+            "maxLength": 1000,
+            "minLength": 1,
+            "title": "Message",
+            "description": "Mensagem do cliente a ser classificada (1 a 1000 caracteres).",
+            "examples": [
+              "Meu cartão foi bloqueado, como desbloqueio?"
+            ]
+          },
+          "channel": {
+            "$ref": "#/components/schemas/Channel",
+            "description": "Canal de origem do atendimento.",
+            "default": "chat"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "message"
+        ],
+        "title": "PredictRequest"
+      },
+      "PredictResponse": {
+        "properties": {
+          "id": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Id",
+            "description": "ID da predição persistida."
+          },
+          "intent": {
+            "type": "string",
+            "title": "Intent",
+            "description": "Intenção prevista (taxonomia BANKING77)."
+          },
+          "confidence": {
+            "type": "number",
+            "maximum": 1.0,
+            "minimum": 0.0,
+            "title": "Confidence"
+          },
+          "risk_level": {
+            "$ref": "#/components/schemas/RiskLevel",
+            "description": "Risco de fraude/engenharia social."
+          },
+          "model_version": {
+            "type": "string",
+            "title": "Model Version"
+          },
+          "detail": {
+            "type": "string",
+            "title": "Detail"
+          }
+        },
+        "type": "object",
+        "required": [
+          "intent",
+          "confidence",
+          "risk_level",
+          "model_version",
+          "detail"
+        ],
+        "title": "PredictResponse"
+      },
+      "PredictionPublic": {
+        "properties": {
+          "id": {
+            "type": "integer",
+            "title": "Id"
+          },
+          "intent": {
+            "type": "string",
+            "title": "Intent"
+          },
+          "confidence": {
+            "type": "number",
+            "title": "Confidence"
+          },
+          "risk_level": {
+            "$ref": "#/components/schemas/RiskLevel"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Created At"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "intent",
+          "confidence",
+          "risk_level",
+          "created_at"
+        ],
+        "title": "PredictionPublic"
+      },
+      "RiskLevel": {
+        "type": "string",
+        "enum": [
+          "low",
+          "medium",
+          "high"
+        ],
+        "title": "RiskLevel"
+      },
+      "SecurityProbabilities": {
+        "properties": {
+          "benign": {
+            "type": "number",
+            "maximum": 1.0,
+            "minimum": 0.0,
+            "title": "Benign"
+          },
+          "threat": {
+            "type": "number",
+            "maximum": 1.0,
+            "minimum": 0.0,
+            "title": "Threat"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "benign",
+          "threat"
+        ],
+        "title": "SecurityProbabilities"
+      },
+      "SecurityResult": {
+        "properties": {
+          "task": {
+            "type": "string",
+            "const": "security_binary",
+            "title": "Task"
+          },
+          "label": {
+            "type": "string",
+            "enum": [
+              "benign",
+              "threat"
+            ],
+            "title": "Label"
+          },
+          "probability": {
+            "type": "number",
+            "maximum": 1.0,
+            "minimum": 0.0,
+            "title": "Probability",
+            "description": "Score correspondente a `label` (não é o score BANKING77)."
+          },
+          "probabilities": {
+            "$ref": "#/components/schemas/SecurityProbabilities"
+          },
+          "model_version": {
+            "type": "string",
+            "title": "Model Version"
+          }
+        },
+        "type": "object",
+        "required": [
+          "task",
+          "label",
+          "probability",
+          "probabilities",
+          "model_version"
+        ],
+        "title": "SecurityResult",
+        "description": "Resultado do modelo binário de segurança (conteúdo, não intenção moral)."
+      },
+      "Token": {
+        "properties": {
+          "access_token": {
+            "type": "string",
+            "title": "Access Token"
+          },
+          "token_type": {
+            "type": "string",
+            "title": "Token Type",
+            "default": "bearer"
+          },
+          "expires_in": {
+            "type": "integer",
+            "title": "Expires In",
+            "description": "Validade do token em segundos."
+          }
+        },
+        "type": "object",
+        "required": [
+          "access_token",
+          "expires_in"
+        ],
+        "title": "Token"
+      },
+      "UserPublic": {
+        "properties": {
+          "username": {
+            "type": "string",
+            "title": "Username"
+          },
+          "full_name": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Full Name"
+          },
+          "role": {
+            "type": "string",
+            "title": "Role"
+          }
+        },
+        "type": "object",
+        "required": [
+          "username",
+          "role"
+        ],
+        "title": "UserPublic"
+      },
+      "ValidationErrorResponse": {
+        "properties": {
+          "detail": {
+            "type": "string",
+            "title": "Detail",
+            "default": "Requisição inválida."
+          },
+          "erros": {
+            "items": {
+              "$ref": "#/components/schemas/FieldError"
+            },
+            "type": "array",
+            "title": "Erros"
+          }
+        },
+        "type": "object",
+        "required": [
+          "erros"
+        ],
+        "title": "ValidationErrorResponse",
+        "description": "Formato do handler de 422: indica o campo, nunca o valor recebido."
+      }
+    },
+    "securitySchemes": {
+      "OAuth2Password": {
+        "type": "oauth2",
+        "flows": {
+          "password": {
+            "scopes": {},
+            "tokenUrl": "/auth/token"
+          }
+        }
+      }
+    }
+  },
+  "tags": [
+    {
+      "name": "health",
+      "description": "Disponibilidade da API e do banco. Público."
+    },
+    {
+      "name": "auth",
+      "description": "Emissão de JWT e identidade do usuário. Login com rate limiting."
+    },
+    {
+      "name": "predict",
+      "description": "Classificação de mensagens e consulta das próprias predições (JWT)."
+    },
+    {
+      "name": "classify",
+      "description": "Classificação de intenção BANKING77 + segurança com modelo treinado (JWT)."
+    }
+  ]
+}

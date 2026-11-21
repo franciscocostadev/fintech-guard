@@ -21,6 +21,14 @@ VALIDATION_ERROR = {
     },
 }
 
+SERVICE_UNAVAILABLE = {
+    503: {
+        "model": ErrorResponse,
+        "description": "Modelo de classificação indisponível. Nenhum detalhe interno é exposto.",
+        "content": {"application/json": {"example": {"detail": "Serviço de classificação indisponível."}}},
+    },
+}
+
 RATE_LIMITED = {
     429: {
         "model": ErrorResponse,
@@ -29,5 +37,16 @@ RATE_LIMITED = {
                                     "schema": {"type": "integer"}}},
         "content": {"application/json": {"example": {
             "detail": "Muitas tentativas de login. Tente novamente mais tarde."}}},
+    },
+}
+
+RATE_LIMITED_USER = {
+    429: {
+        "model": ErrorResponse,
+        "description": "Limite de classificações por usuário excedido na janela.",
+        "headers": {"Retry-After": {"description": "Segundos até a próxima tentativa.",
+                                    "schema": {"type": "integer"}}},
+        "content": {"application/json": {"example": {
+            "detail": "Muitas classificações em curto intervalo. Tente novamente mais tarde."}}},
     },
 }
