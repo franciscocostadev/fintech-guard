@@ -1,6 +1,6 @@
 from typing import Annotated
 
-from fastapi import Depends, HTTPException, status
+from fastapi import Depends, HTTPException, Request, status
 from fastapi.security import OAuth2PasswordBearer
 from sqlmodel import Session, select
 
@@ -53,6 +53,23 @@ async def get_current_user(
 
 CurrentUser = Annotated[User, Depends(get_current_user)]
 DbSession = Annotated[Session, Depends(get_db)]
+
+
+async def enforce_classify_rate_limit(
+    request: Request, current_user: CurrentUser
+) -> None:
+    """Limite por usuário na inferência. Depende de CurrentUser, então só corre
+    após a autenticação: requisições sem token recebem 401 antes deste ponto."""
+    limiter = getattr(request.app.state, "classify_limiter", None)
+    if limiter is None:
+        return
+    retry_after = limiter.consume(current_user.username)
+    if retry_after:
+        raise HTTPException(
+            status_code=status.HTTP_429_TOO_MANY_REQUESTS,
+            detail="Muitas classificações em curto intervalo. Tente novamente mais tarde.",
+            headers={"Retry-After": str(retry_after)},
+        )
 
 
 def require_role(*roles: str):

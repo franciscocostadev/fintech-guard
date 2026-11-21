@@ -44,6 +44,8 @@ def _setup_db():
 @pytest.fixture(autouse=True)
 def _reset_limiter():
     app.state.login_limiter = LoginRateLimiter(5, 300)
+    # Limitador de /classify reiniciado por teste para isolar as contagens.
+    app.state.classify_limiter = LoginRateLimiter(60, 60)
 
 
 @pytest.fixture

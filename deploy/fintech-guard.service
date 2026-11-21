@@ -1,0 +1,37 @@
+# systemd unit para a Fintech Guard API (uvicorn atrás do Nginx do CloudPanel).
+# Troque <USUARIO-DO-SITE> pelo usuário do site no CloudPanel.
+#
+# IMPORTANTE: o código fica numa pasta PRIVADA (fora do htdocs público), ex.:
+#   /home/<USUARIO-DO-SITE>/fintech-api
+# Como o site é um reverse proxy, o Nginx só encaminha pra 127.0.0.1:8000;
+# o código não precisa (e não deve) ficar no htdocs. Assim .env, .db e modelos
+# nunca ficam sob a raiz web.
+#
+# Instale em /etc/systemd/system/fintech-guard.service (precisa de sudo/root):
+#   sudo cp deploy/fintech-guard.service /etc/systemd/system/
+#   sudo systemctl daemon-reload
+#   sudo systemctl enable --now fintech-guard
+#   systemctl status fintech-guard
+#
+# O app lê o .env da WorkingDirectory automaticamente (pydantic-settings),
+# por isso não é preciso EnvironmentFile aqui.
+
+[Unit]
+Description=Fintech Guard API (FastAPI/uvicorn)
+After=network.target
+
+[Service]
+Type=simple
+User=<USUARIO-DO-SITE>
+WorkingDirectory=/home/<USUARIO-DO-SITE>/fintech-api
+# 1 worker: o rate limiter e o login limiter são em memória por processo.
+# Para múltiplos workers, migrar os limitadores para um store compartilhado.
+ExecStart=/home/<USUARIO-DO-SITE>/fintech-api/.venv/dados/bin/python -m uvicorn app.main:app --host 127.0.0.1 --port 8000 --workers 1
+Restart=always
+RestartSec=3
+# Endurecimento básico do serviço
+NoNewPrivileges=true
+PrivateTmp=true
+
+[Install]
+WantedBy=multi-user.target

@@ -25,6 +25,11 @@ class Settings(BaseSettings):
     login_max_attempts: int = Field(default=5, ge=1, le=100)
     login_window_seconds: int = Field(default=300, ge=1, le=3600)
 
+    # Limite por usuário na inferência /classify (CPU-bound). Defesa contra
+    # abuso/exaustão de recursos por um token legítimo; não há limite global hoje.
+    classify_max_requests: int = Field(default=60, ge=1, le=10_000)
+    classify_window_seconds: int = Field(default=60, ge=1, le=3600)
+
     seed_username: str = "analista"
     seed_password: str = "Troque@Esta#Senha123"
     # segunda conta, com outro papel, para testar BOLA no pentest

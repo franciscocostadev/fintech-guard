@@ -1,0 +1,25 @@
+# Dependências de PRODUÇÃO da API (sem notebook/dev: nada de jupyter, seaborn,
+# matplotlib, pytest). As versões de ML casam EXATAMENTE com os metadados dos
+# modelos serializados (models/TP4/**/metadata.json) — o loader valida e o
+# startup falha se não baterem.
+
+# Web/API
+fastapi==0.115.6
+uvicorn[standard]==0.34.0
+sqlalchemy==2.0.36
+sqlmodel==0.0.22
+pydantic==2.10.4
+pydantic-settings==2.7.0
+python-multipart==0.0.20
+PyJWT==2.10.1
+bcrypt==4.2.1
+
+# Inferência ML (versões fixadas = metadados dos modelos)
+scikit-learn==1.9.1
+scipy==1.18.1
+numpy==2.5.4
+joblib==1.6.0
+pandas==2.2.3
+
+# Driver MySQL (quando DATABASE_URL = mysql+pymysql://...). Puro Python, sem libs C.
+PyMySQL==1.1.1
