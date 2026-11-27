@@ -3,12 +3,33 @@
 O Fintech Guard é uma API para classificar mensagens de atendimento bancário e
 sinalizar possíveis fraudes ou tentativas de engenharia social. A API usa JWT,
 guarda as predições com SQLModel e verifica se o usuário pode consultar cada
-registro. Por enquanto, o classificador usa regras simples; ainda não foi
-integrado um modelo treinado.
+registro. O endpoint `POST /classify` integra os modelos treinados (BANKING77 +
+classificador de segurança), carregados na inicialização da API.
 
 O repositório reúne a API com os controles OWASP auditados pelo OWASP ZAP e a
 análise exploratória dos dados, organizada por entrega (TP1, TP2, TP3 e TP4). Veja
 [Dados e EDA](#dados-e-eda).
+
+## TP4 — mapa das entregas por item de rubrica
+
+**API no ar:** https://fintech-guard.online · **Entregas do Integrante B (Francisco)** integradas à `main` em 21/11/2026 pelo [PR #8](https://github.com/franciscocostadev/fintech-guard/pull/8) (commit `006c519`).
+
+| Item da rubrica | Onde está no repositório |
+| --- | --- |
+| Classificador TF-IDF + GridSearchCV | [notebook BANKING77](notebooks/TP4/banking77/01_classificacao_intencoes.ipynb) · [notebook segurança](notebooks/TP4/security/01_classificacao.ipynb) |
+| Métricas: matriz de confusão, F1/classe, ROC-AUC | [figuras](reports/TP4/figures/) · [métricas BANKING77](reports/TP4/banking77/) · [classificacao.md](reports/TP4/classificacao.md) |
+| Baseline (classe majoritária) + justificativa | [per_class_majority.csv](reports/TP4/banking77/per_class_majority.csv) · [classificacao_banking77.md](reports/TP4/classificacao_banking77.md) |
+| `POST /classify` (JWT, intenção + probabilidade) | [classify.py](app/api/routes/classify.py) · [schemas](app/schemas/classify.py) |
+| Modelo serializado + carregado no startup | [models/TP4/](models/TP4/) · [classifier.py](app/services/classifier.py) · [main.py](app/main.py) (lifespan) |
+| Agente: `Agent`, `Runner`, `@function_tool` → `/classify` | [fintech_agent/runtime.py](fintech_agent/runtime.py) |
+| Conversa de ≥3 turnos demonstrada | [agente_transcricao.json](reports/TP4/agente_transcricao.json) |
+| ≥2 ataques JWT (jwt_tool) | [log-parcial, seção JWT](pentest/log-parcial-pentest.md) · [evidências](pentest/evidencias/jwt/) |
+| Recon: Kiterunner + Nmap | [log-parcial, seção Recon](pentest/log-parcial-pentest.md) · [evidências](pentest/evidencias/recon/) |
+| BOLA/BFLA/IDOR + fuzzing | [log-parcial](pentest/log-parcial-pentest.md) · [evidências](pentest/evidencias/) |
+| Log parcial estruturado + hipóteses | [pentest/log-parcial-pentest.md](pentest/log-parcial-pentest.md) |
+| Pentest adversário (API do colega) | [log-adversario-healthassist.md](pentest/log-adversario-healthassist.md) · [registro do alvo](pentest/registro_alvo.md) |
+| Evidência de testes (`pytest tests/ -v`) | [evidencia_pytest.txt](reports/TP4/evidencia_pytest.txt) — 142 passed |
+| Validação OpenAPI (contratos dos endpoints) | [openapi-validacao.md](reports/TP4/openapi-validacao.md) · [openapi.json](reports/TP4/openapi.json) |
 
 ## TP4: Dados e IA
 
@@ -27,15 +48,14 @@ permanece ativo, com [notebook próprio](notebooks/TP4/security/01_classificacao
 [resultados separados](reports/TP4/classificacao.md).
 
 O [serviço de classificação](ml/classification_service.py) carrega os dois modelos
-e compõe seus resultados para o agente. **A integração de `/classify` com JWT e
-carregamento na inicialização da API permanece pendente**, assim como a conversa
-real do agente com três turnos, que exige chave e modelo OpenAI configurados.
-O [contrato para integração](reports/TP4/contrato_classify.md), o
-[guia do agente](reports/TP4/agente.md) e o
-[alinhamento para Francisco](reports/TP4/alinhamento_francisco.md) especificam os
-próximos passos. Testes offline com provedor/API simulados não são evidência de
-conversa real. O pentest é do Integrante B. Ambos os datasets estão em inglês;
-o desempenho em português ainda precisa de validação própria.
+na inicialização da API e compõe seus resultados. A integração do
+[`POST /classify`](app/api/routes/classify.py) com JWT **está concluída**, assim
+como a **conversa real de três turnos do agente**
+([transcript](reports/TP4/agente_transcricao.json), executada com `gpt-4o-mini`) e
+o **pentest** (próprio e adversário — ver o mapa acima). O
+[contrato de `/classify`](reports/TP4/contrato_classify.md) e o
+[guia do agente](reports/TP4/agente.md) documentam o funcionamento. Ambos os
+datasets estão em inglês; o desempenho em português ainda precisa de validação própria.
 
 ## TP3: evidências para avaliação
 
