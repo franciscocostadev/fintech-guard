@@ -125,8 +125,8 @@ encerra antes de acessar a rede. O arquivo só é criado após três turnos comp
 
 O roteiro não impõe rótulos ou respostas à execução real. A evidência registra
 mensagens, respostas recebidas, eventos da ferramenta, versões, modelo e data UTC.
-Inclui `observed_intents`, `distinct_intents_observed` e a indicação de revisão
-manual pendente. Não registra chave ou JWT.
+Inclui `observed_intents`, `distinct_intents_observed` e um campo de revisão de
+qualidade das respostas. Não registra chave ou JWT.
 
 Após executar, conferir três intenções efetivamente observadas, adequação das
 respostas e uso dos sinais de segurança sem acusar o cliente. Se os resultados
