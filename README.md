@@ -74,8 +74,11 @@ já integrada, as melhorias desta revisão e as pendências antes do TP4.
 - [OpenAPI obtido por HTTP](reports/TP3/revisao_20261111/openapi.json) e [verificação dos cinco contratos](reports/TP3/revisao_20261111/openapi-validacao.json).
 - [Auditoria de segurança do integrante B](docs/auditoria-final-tp3.md).
 
-**Pendente:** colega adversário, URL/IP autorizada e formalização do escopo/janela do pentest.
-O endereço do repositório e o localhost de validação não substituem a URL da API adversária.
+**Etapa adversária (TP4):** colega registrado — Gabriel (HealthAssist API) — com escopo e
+regras formalizados em [`pentest/registro_alvo.md`](pentest/registro_alvo.md). O colega forneceu
+o código-fonte, mas não publicou um deploy; o pentest foi conduzido sobre o código em instância
+local ([log adversário](pentest/log-adversario-healthassist.md)). Caso uma URL de deploy seja
+disponibilizada, o playbook deve ser reexecutado contra ela.
 
 ## Como executar
 
