@@ -47,10 +47,9 @@ ambientes separados. Foram observadas `lost_or_stolen_card`, `card_arrival` e
 ela **não é a conversa real de três turnos**. Os testes do Runner também são
 explicitamente simulados.
 
-Ainda faltam integração de `/classify` com JWT, carregamento no startup e OpenAPI
-por B; configuração de chave/modelo OpenAI; e execução/revisão da conversa real.
-O escopo de pentest depende de B. Estes logs registram a validação local;
-a execução desta revisão no GitHub Actions permanece pendente.
+A integração de `/classify` com JWT, o carregamento no startup e o OpenAPI por B,
+a conversa real de três turnos e o pentest **foram concluídos** (21/11/2026, PR #8).
+Estes logs registram a validação local; o CI no GitHub Actions foi aprovado no PR #8.
 
 O workflow instala as dependências TP4 em jobs separados. A configuração
 preserva o código validado dos modelos, do agente e da API.

@@ -2,8 +2,8 @@
 
 Atualizado em 13/11/2026. O Integrante A entrega dois pipelines independentes e
 o serviço de inferência composto. O Integrante B implementa a rota, os schemas,
-o carregamento na API e seus testes HTTP. **Situação: implementação de
-`POST /classify` e validação HTTP integradas pendentes.**
+o carregamento na API e seus testes HTTP. **Situação (21/11/2026): `POST /classify`
+e a validação HTTP estão integrados e concluídos** ([PR #8](https://github.com/franciscocostadev/fintech-guard/pull/8); ver [`app/api/routes/classify.py`](../../app/api/routes/classify.py)).
 
 ## Entrada e autenticação
 

@@ -1,6 +1,6 @@
 # TP4 — Dados e IA: intenções bancárias e segurança
 
-Revisão: 13/11/2026. O projeto usa **dois componentes ativos**: BANKING77 para
+Revisão: 13/11/2026 (Dados e IA, Integrante A); **integração completa em 21/11/2026** (Integrante B, [PR #8](https://github.com/franciscocostadev/fintech-guard/pull/8), commit `006c519`). O projeto usa **dois componentes ativos**: BANKING77 para
 prever a solicitação bancária e o dataset de segurança para analisar sinais de
 ameaça no conteúdo. O [adendo de arquitetura](arquitetura_dupla.md) registra
 essa continuidade da proposta original, preservando o histórico dos TPs 1 a 3.
@@ -16,15 +16,15 @@ Base de trabalho: main de Francisco, commit `3933d21c3a9396c52bb108155ca98d70d3d
 | Baseline e ganho do modelo | [Relatório BANKING77](classificacao_banking77.md), [comparação](banking77/metrics.csv) | Baseline majoritária, pipeline inicial e selecionado no mesmo teste |
 | Modelo de segurança ativo | [Notebook](../../notebooks/TP4/security/01_classificacao.ipynb), [relatório](classificacao.md) | Pipeline binário preservado, com avaliação própria |
 | Dois artefatos serializados e inferência composta | [BANKING77](../../models/TP4/banking77/), [segurança](../../models/TP4/security/), [serviço](../../ml/classification_service.py) | Implementados; conferir os testes na [validação atual](validation_dual/README.md) |
-| POST /classify + JWT e carregamento no startup | [Contrato para B](contrato_classify.md), [alinhamento](alinhamento_francisco.md) | Integração da API pendente — B |
-| Agent + Runner + function_tool usando os dois resultados | [Código](../../fintech_agent/), [guia](agente.md), [validação](validation_dual/README.md) | Implementado; testes offline separados da evidência real |
-| Conversa real de três turnos | [Roteiro/CLI](../../fintech_agent/demo.py) | Pendente: chave/modelo OpenAI e endpoint real |
-| Ataques e log parcial do pentest | Entrega do integrante B | Fora desta implementação de Dados e IA |
+| POST /classify + JWT e carregamento no startup | [Rota](../../app/api/routes/classify.py), [schemas](../../app/schemas/classify.py), [lifespan](../../app/main.py) | **Concluído** (PR #8); 18 testes em [test_classify.py](../../tests/test_classify.py) |
+| Agent + Runner + function_tool usando os dois resultados | [Código](../../fintech_agent/runtime.py), [guia](agente.md) | **Concluído**; execução real registrada (ver conversa de 3 turnos) |
+| Conversa real de três turnos | [Transcrição](agente_transcricao.json), [roteiro/CLI](../../fintech_agent/demo.py) | **Concluído** (21/11, `gpt-4o-mini`): 3 turnos, 3 intenções distintas |
+| Ataques e log parcial do pentest | [Log próprio](../../pentest/log-parcial-pentest.md), [log adversário](../../pentest/log-adversario-healthassist.md) | **Concluído**: JWT, recon, BOLA/BFLA, fuzzing + evidências |
 
-O TP4 completo **ainda não está pronto para entrega**. Startup, HTTP autenticado
-e a conversa real não são comprovados pelos testes locais dos wrappers ou por
-transportes simulados. Os ataques e o log parcial também dependem de B. Consulte
-a [conferência das 12 rubricas](rubricas_TP4.md).
+**O TP4 está completo e integrado** (Integrantes A e B). A rota `/classify` com JWT,
+o carregamento dos modelos no startup, a conversa real de três turnos do agente e o
+pentest estão demonstrados e versionados na `main` (PR #8, commit `006c519`).
+Consulte a [conferência das 12 rubricas](rubricas_TP4.md) — todas atendidas.
 
 ## Resultados do classificador de intenções
 
@@ -74,7 +74,7 @@ Alternativa para treinamento sem notebook: `python -m scripts.tp4_banking77`.
 O componente de segurança mantém seu executor `scripts/execute_tp4_notebook.py`.
 O [workflow do TP4](validation_dual/workflow.md) instala os requirements adequados
 em jobs separados e mantém `security-tests` como check final das duas suítes.
-Validação local concluída; a execução no GitHub ainda não está registrada para esta revisão.
+Validação local concluída; o CI do GitHub Actions foi aprovado no PR #8 (6/6 checks).
 Reexecuções idênticas reproduzem a mesma avaliação; não constituem teste novo.
 Protocolo e manifesto recusam sobrescrita com decisões ou partições divergentes.
 
