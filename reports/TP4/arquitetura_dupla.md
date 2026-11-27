@@ -115,8 +115,9 @@ A validação da conversa real e da consistência da entrega integrada é conjun
   registradas em sua documentação. Resultado interno alto não resolve esses limites.
 - A conversa real exige a API integrada, chave/modelo OpenAI e JWT de conta
   sintética. Testes offline não comprovam a qualidade das respostas de um LLM real.
-- Os ataques, evidências e log parcial do pentest permanecem no escopo de B.
+- Os ataques, evidências e log parcial do pentest são do Integrante B, concluídos (ver [`pentest/`](../../pentest/)).
 
-O [contrato composto](contrato_classify.md) define a integração. O
-[documento de integração](alinhamento_francisco.md) apresenta as responsabilidades
-do Integrante B, os critérios de conclusão e as evidências pendentes.
+O [contrato composto](contrato_classify.md) define a integração, **concluída em
+21/11/2026** ([PR #8](https://github.com/franciscocostadev/fintech-guard/pull/8)). O
+[documento de integração](alinhamento_francisco.md) apresenta as responsabilidades do
+Integrante B e as evidências.

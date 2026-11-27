@@ -174,10 +174,9 @@ scores e versão próprios. Não há soma das probabilidades dos dois modelos.
 O [agente](agente.md) utiliza intenção para orientar atendimento e segurança para cuidados,
 sem realizar operações financeiras nem presumir que um relato de golpe é intenção maliciosa.
 
-**Pendências:** B integra `/classify` com JWT, startup e contratos OpenAPI; a dupla configura
-chave/modelo OpenAI e registra uma conversa real de três turnos. Testes offline não
-substituem essa evidência. O [alinhamento com Francisco](alinhamento_francisco.md) detalha
-as ações.
+**Concluído (21/11/2026):** B integrou [`/classify`](../../app/api/routes/classify.py) com
+JWT, startup e OpenAPI; a conversa real de três turnos foi [registrada](agente_transcricao.json)
+com `gpt-4o-mini`. O [alinhamento com Francisco](alinhamento_francisco.md) detalha as entregas.
 
 ## 6. Limitações e próximos passos
 

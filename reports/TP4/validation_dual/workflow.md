@@ -1,7 +1,7 @@
 # TP4 — configuração e validação local do GitHub Actions
 
-Validação local: 13/11/2026. A execução desta revisão no runner Linux do
-GitHub permanece pendente.
+Validação local: 13/11/2026. O CI no runner Linux do GitHub foi executado e
+**aprovado** na integração do Integrante B (PR #8, 6/6 checks).
 
 ## Configuração
 

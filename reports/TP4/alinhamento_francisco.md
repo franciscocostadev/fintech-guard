@@ -1,7 +1,8 @@
 # Integração do TP4 — Dados e IA e API
 
-Atualizado em 13/11/2026. Este documento reúne os artefatos de Dados e IA,
-os requisitos de integração da API e as responsabilidades dos integrantes.
+Atualizado em 13/11/2026; **integração concluída em 21/11/2026** ([PR #8](https://github.com/franciscocostadev/fintech-guard/pull/8)).
+Este documento reúne os artefatos de Dados e IA, os requisitos de integração da API
+(abaixo, todos atendidos) e as responsabilidades dos integrantes.
 
 ## Decisão de projeto
 
@@ -110,11 +111,11 @@ reimplementar a lógica estatística na API.
 | Conversa real de pelo menos três turnos | A + B | API real, classificações registradas e respostas revisadas. |
 | Pentest e log parcial | B | Método, payload, resposta, evidência e avaliação preliminar por ataque. |
 
-**Pendências atuais de integração:** rota `/classify` real, carregamento na API,
-OpenAPI/testes HTTP integrados, chave/modelo OpenAI e conversa real de três turnos.
-O guia [`agente.md`](agente.md) contém o comando e as variáveis necessárias.
-Manter chaves e JWT na configuração local de execução, sem incluí-los em
-relatórios ou no repositório.
+**Integração concluída (21/11/2026, [PR #8](https://github.com/franciscocostadev/fintech-guard/pull/8)):**
+rota [`/classify`](../../app/api/routes/classify.py) com JWT, carregamento no startup,
+OpenAPI validado, suíte com 142 testes e [conversa real de três turnos](agente_transcricao.json)
+executada. O guia [`agente.md`](agente.md) contém o comando e as variáveis. Chaves e
+JWT permanecem na configuração local de execução, fora de relatórios e do repositório.
 
 As mensagens da demonstração são sintéticas e em inglês, compatíveis com o idioma
 das bases. A classificação de segurança não representa a intenção moral do

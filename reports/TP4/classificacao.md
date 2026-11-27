@@ -151,8 +151,8 @@ e validar o OpenAPI/HTTP. A API atual não foi alterada.
 O [agente](agente.md) tem Agent, Runner e function_tool que chama HTTP com JWT privado,
 memória e roteiro de três turnos. A intenção bancária orienta o atendimento, enquanto
 o resultado de segurança orienta os cuidados, inclusive com relatos legítimos de golpes.
-Os testes offline não demonstram resposta real de LLM. A evidência real depende de
-chave/modelo OpenAI e da rota integrada; continua pendente.
+A evidência real da conversa de três turnos foi registrada em 21/11/2026 com
+`gpt-4o-mini` ([transcrição](agente_transcricao.json)), sobre a rota `/classify` integrada.
 
 Próximos passos de dados: coletar amostra externa bancária em português com direitos de uso
 claros e anotações independentes; incluir relatos legítimos de golpes; avaliar custo dos erros,
